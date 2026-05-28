@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="VILLA JEDI">
+<meta name="theme-color" content="#080808">
+<link rel="manifest" href="manifest.json">
+<title>VILLA JEDI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;600&family=Cinzel+Decorative:wght@300&family=EB+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void:    #080808;
+  --deep:    #0e0e0e;
+  --surface: #141414;
+  --lift:    #1c1c1c;
+  --border:  rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --amber:   #C8923A;
+  --amber2:  #E8B46A;
+  --ash:     #888077;
+  --pale:    #D4CFC8;
+  --white:   #F2EDE6;
+  --tab-h:   68px;
+  --r:       2px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html, body {
+  height:100%; overflow:hidden;
+  background:var(--void);
+  font-family:'EB Garamond', Georgia, serif;
+  color:var(--white);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── Grain overlay ─── */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:1000; pointer-events:none;
+  opacity:0.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px;
+}
+
+/* ─── App shell ─── */
+#app { display:flex; flex-direction:column; height:100vh; height:100dvh; position:relative; }
+
+/* ─── Screens ─── */
+.screen { display:none; flex:1; overflow-y:auto; overflow-x:hidden; padding-bottom:calc(var(--tab-h) + 20px); }
+.screen.active { display:block; animation: fadeIn 0.5s ease forwards; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* ─── Screen header ─── */
+.screen-header {
+  padding:40px 28px 20px;
+  border-bottom:1px solid var(--border);
+}
+.screen-eyebrow {
+  font-family:'Cinzel', serif;
+  font-size:9px; letter-spacing:5px; text-transform:uppercase;
+  color:var(--amber); margin-bottom:10px;
+}
+.screen-title {
+  font-family:'Cinzel', serif;
+  font-size:28px; font-weight:300;
+  letter-spacing:3px; text-transform:uppercase;
+  color:var(--white); line-height:1.2;
+}
+
+/* ════════════════════════════════
+   WELCOME SCREEN
+════════════════════════════════ */
+#screen-welcome { padding-bottom:calc(var(--tab-h) + 20px); }
+
+.hero {
+  position:relative; height:46vh; min-height:280px;
+  overflow:hidden;
+}
+.hero-img {
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover;
+  filter:brightness(0.35) contrast(1.1);
+}
+/* Cinematic letterbox lines */
+.hero-letterbox-top, .hero-letterbox-bot {
+  position:absolute; left:0; right:0; height:40px;
+  background:var(--void); z-index:2;
+}
+.hero-letterbox-top { top:0; }
+.hero-letterbox-bot { bottom:0; }
+
+.hero-content {
+  position:absolute; inset:0; z-index:3;
+  display:flex; flex-direction:column;
+  justify-content:flex-end; padding:40px 28px;
+}
+.hero-rule {
+  width:32px; height:1px; background:var(--amber);
+  margin-bottom:16px;
+}
+.hero-title {
+  font-family:'Cinzel', serif;
+  font-size:38px; font-weight:300;
+  letter-spacing:8px; text-transform:uppercase;
+  color:var(--white); line-height:1;
+  margin-bottom:8px;
+}
+.hero-sub {
+  font-family:'EB Garamond', serif;
+  font-size:15px; font-style:italic;
+  color:var(--ash); letter-spacing:1px;
+}
+
+.welcome-body { padding:28px 28px 0; }
+
+.guest-card {
+  border:1px solid var(--border);
+  border-left:1px solid var(--amber);
+  padding:18px 22px; margin-bottom:32px;
+  background:rgba(200,146,58,0.04);
+}
+.guest-card-eyebrow {
+  font-family:'Cinzel', serif;
+  font-size:8px; letter-spacing:5px; text-transform:uppercase;
+  color:var(--amber); margin-bottom:8px;
+}
+.guest-card-name {
+  font-family:'Cinzel', serif;
+  font-size:22px; font-weight:300;
+  letter-spacing:3px; color:var(--white);
+}
+
+/* Menu grid */
+.menu-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); border:1px solid var(--border); }
+.menu-tile {
+  background:var(--void); padding:22px 18px;
+  cursor:pointer; transition:background 0.2s;
+  display:flex; flex-direction:column; gap:12px;
+  -webkit-user-select:none;
+}
+.menu-tile:active { background:var(--lift); }
+.menu-tile-num {
+  font-family:'Cinzel', serif;
+  font-size:9px; letter-spacing:3px; color:var(--amber); opacity:0.7;
+}
+.menu-tile-name {
+  font-family:'Cinzel', serif;
+  font-size:12px; font-weight:400;
+  letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--pale); line-height:1.4;
+}
+.menu-tile-sub {
+  font-family:'EB Garamond', serif;
+  font-size:13px; font-style:italic;
+  color:var(--ash);
+}
+.menu-tile-arrow {
+  font-size:16px; color:var(--amber); opacity:0.6;
+  font-style:normal; font-family:monospace;
+}
+
+/* ════════════════════════════════
+   HOUSE MANUAL
+════════════════════════════════ */
+.manual-body { padding:0 28px 0; }
+.manual-item {
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+.manual-item-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 0;
+}
+.manual-item-left { display:flex; flex-direction:column; gap:4px; }
+.manual-item-num {
+  font-family:'Cinzel', serif;
+  font-size:8px; letter-spacing:4px; color:var(--amber); opacity:0.7;
+}
+.manual-item-title {
+  font-family:'Cinzel', serif;
+  font-size:13px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--pale);
+}
+.manual-toggle {
+  font-family:monospace; font-size:18px;
+  color:var(--amber); transition:transform 0.25s;
+  width:24px; text-align:center; flex-shrink:0;
+}
+.manual-item.open .manual-toggle { transform:rotate(45deg); }
+.manual-item-content {
+  max-height:0; overflow:hidden;
+  transition:max-height 0.3s ease, padding 0.3s ease;
+  font-size:16px; line-height:1.8;
+  color:var(--ash); font-style:italic;
+  padding:0;
+}
+.manual-item.open .manual-item-content {
+  max-height:300px; padding-bottom:20px;
+}
+
+/* ════════════════════════════════
+   FOOD / SERVICES CARDS
+════════════════════════════════ */
+.items-list { padding:0 28px; }
+.item-row {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  padding:22px 0; border-bottom:1px solid var(--border);
+  cursor:pointer; transition:opacity 0.15s; gap:16px;
+}
+.item-row:active { opacity:0.6; }
+.item-row-cat {
+  font-family:'Cinzel', serif;
+  font-size:8px; letter-spacing:4px; text-transform:uppercase;
+  color:var(--amber); margin-bottom:6px; opacity:0.8;
+}
+.item-row-name {
+  font-family:'Cinzel', serif;
+  font-size:14px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--pale); margin-bottom:4px;
+}
+.item-row-desc {
+  font-size:14px; font-style:italic; color:var(--ash); line-height:1.5;
+}
+.item-row-price {
+  font-family:'Cinzel', serif;
+  font-size:16px; font-weight:400;
+  color:var(--amber2); white-space:nowrap;
+  text-align:right; flex-shrink:0;
+}
+.item-row-idr {
+  font-family:'EB Garamond', serif;
+  font-size:11px; color:var(--ash);
+  text-align:right; margin-top:3px;
+}
+
+/* ════════════════════════════════
+   CONCIERGE
+════════════════════════════════ */
+.concierge-body { padding:32px 28px; }
+.concierge-intro {
+  margin-bottom:36px; padding-bottom:32px;
+  border-bottom:1px solid var(--border);
+}
+.concierge-intro-title {
+  font-family:'Cinzel', serif;
+  font-size:11px; letter-spacing:4px; text-transform:uppercase;
+  color:var(--ash); margin-bottom:14px;
+}
+.concierge-intro-text {
+  font-size:17px; font-style:italic; line-height:1.8; color:var(--pale);
+}
+.action-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:22px 0; border-bottom:1px solid var(--border);
+  cursor:pointer; text-decoration:none; color:inherit;
+  transition:opacity 0.15s;
+}
+.action-row:active { opacity:0.5; }
+.action-row-body {}
+.action-row-title {
+  font-family:'Cinzel', serif;
+  font-size:13px; letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--pale); margin-bottom:4px;
+}
+.action-row-sub { font-size:14px; font-style:italic; color:var(--ash); }
+.action-row-mark {
+  font-family:monospace; font-size:20px; color:var(--amber); flex-shrink:0;
+}
+
+/* ════════════════════════════════
+   MUSIC / MOVIES
+════════════════════════════════ */
+.media-list { padding:0 28px; }
+.media-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 0; border-bottom:1px solid var(--border);
+  cursor:pointer; text-decoration:none; color:inherit;
+  transition:opacity 0.15s; gap:16px;
+}
+.media-row:active { opacity:0.5; }
+.media-row-body { flex:1; min-width:0; }
+.media-row-label {
+  font-family:'Cinzel', serif;
+  font-size:8px; letter-spacing:4px; text-transform:uppercase;
+  color:var(--amber); margin-bottom:6px; opacity:0.8;
+}
+.media-row-title {
+  font-family:'Cinzel', serif;
+  font-size:14px; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--pale);
+  margin-bottom:3px;
+}
+.media-row-sub { font-size:14px; font-style:italic; color:var(--ash); }
+.media-row-mark { font-family:monospace; font-size:18px; color:var(--amber); flex-shrink:0; }
+
+/* ════════════════════════════════
+   LIGHTS
+════════════════════════════════ */
+.lights-body { padding:0 28px; }
+.light-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:22px 0; border-bottom:1px solid var(--border); gap:16px;
+}
+.light-row-name {
+  font-family:'Cinzel', serif;
+  font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--pale);
+}
+.light-row-status { font-size:13px; font-style:italic; color:var(--ash); margin-top:3px; }
+/* Toggle */
+.toggle-wrap { cursor:pointer; flex-shrink:0; }
+.toggle-track {
+  width:48px; height:26px; border-radius:0;
+  border:1px solid var(--border2);
+  background:var(--surface); position:relative;
+  transition:background 0.3s, border-color 0.3s;
+}
+.toggle-track.on { background:rgba(200,146,58,0.15); border-color:var(--amber); }
+.toggle-knob {
+  position:absolute; top:3px; left:3px;
+  width:18px; height:18px;
+  background:var(--ash);
+  transition:left 0.25s, background 0.25s;
+}
+.toggle-track.on .toggle-knob { left:25px; background:var(--amber); }
+
+/* ════════════════════════════════
+   INFO TILES
+════════════════════════════════ */
+.info-body { padding:0 28px; }
+.info-row {
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:18px 0; border-bottom:1px solid var(--border); gap:20px;
+}
+.info-label {
+  font-family:'Cinzel', serif;
+  font-size:9px; letter-spacing:4px; text-transform:uppercase; color:var(--ash);
+  white-space:nowrap;
+}
+.info-value { font-size:15px; color:var(--pale); text-align:right; }
+
+/* ════════════════════════════════
+   DETAIL PANEL
+════════════════════════════════ */
+#detail-panel {
+  position:fixed; inset:0; z-index:100;
+  background:var(--void);
+  transform:translateY(100%);
+  transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  display:flex; flex-direction:column; overflow-y:auto;
+}
+#detail-panel.open { transform:translateY(0); }
+
+.detail-nav {
+  padding:20px 28px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:12px;
+  cursor:pointer; position:sticky; top:0;
+  background:var(--void); z-index:10;
+}
+.detail-nav-back {
+  font-family:monospace; font-size:18px; color:var(--amber);
+}
+.detail-nav-label {
+  font-family:'Cinzel', serif;
+  font-size:9px; letter-spacing:4px; text-transform:uppercase; color:var(--ash);
+}
+.detail-content { padding:36px 28px 60px; }
+.detail-eyebrow {
+  font-family:'Cinzel', serif;
+  font-size:9px; letter-spacing:5px; text-transform:uppercase;
+  color:var(--amber); margin-bottom:16px;
+}
+.detail-title {
+  font-family:'Cinzel', serif;
+  font-size:28px; font-weight:300; letter-spacing:4px; text-transform:uppercase;
+  color:var(--white); margin-bottom:16px; line-height:1.3;
+}
+.detail-rule { width:28px; height:1px; background:var(--amber); margin-bottom:20px; }
+.detail-desc {
+  font-size:17px; font-style:italic; line-height:1.9;
+  color:var(--ash); margin-bottom:32px;
+}
+.detail-price-block { margin-bottom:36px; }
+.detail-price {
+  font-family:'Cinzel', serif;
+  font-size:36px; font-weight:300; color:var(--amber2); letter-spacing:2px;
+}
+.detail-price-idr { font-size:13px; font-style:italic; color:var(--ash); margin-top:4px; }
+.detail-cta {
+  width:100%; padding:18px 0;
+  background:transparent;
+  border:1px solid var(--amber);
+  color:var(--amber2);
+  font-family:'Cinzel', serif;
+  font-size:11px; letter-spacing:5px; text-transform:uppercase;
+  cursor:pointer; transition:all 0.2s;
+}
+.detail-cta:active { background:rgba(200,146,58,0.1); }
+
+/* ════════════════════════════════
+   TAB BAR
+════════════════════════════════ */
+#tabbar {
+  height:var(--tab-h);
+  background:var(--void);
+  border-top:1px solid var(--border);
+  display:flex; align-items:center;
+  flex-shrink:0; position:relative; z-index:50;
+}
+.tab {
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  gap:5px; padding:10px 4px; cursor:pointer;
+  transition:opacity 0.2s; color:var(--ash);
+  -webkit-user-select:none;
+}
+.tab.active { color:var(--amber); }
+.tab:active { opacity:0.5; }
+.tab-icon {
+  width:20px; height:20px;
+  display:flex; align-items:center; justify-content:center;
+}
+/* SVG line icons */
+.tab-icon svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.2; stroke-linecap:round; stroke-linejoin:round; }
+.tab-label {
+  font-family:'Cinzel', serif;
+  font-size:7px; letter-spacing:2px; text-transform:uppercase;
+}
+
+/* Toast */
+#toast {
+  position:fixed; bottom:calc(var(--tab-h) + 16px); left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:var(--amber); color:var(--void);
+  padding:10px 24px;
+  font-family:'Cinzel', serif; font-size:9px; letter-spacing:3px; text-transform:uppercase;
+  opacity:0; transition:all 0.3s; pointer-events:none; z-index:200;
+  white-space:nowrap;
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+.screen::-webkit-scrollbar { display:none; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- WELCOME -->
+<div class="screen active" id="screen-welcome">
+  <div class="hero">
+    <img class="hero-img" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&q=80" alt="">
+    <div class="hero-letterbox-top"></div>
+    <div class="hero-letterbox-bot"></div>
+    <div class="hero-content">
+      <div class="hero-rule"></div>
+      <div class="hero-title">Villa JEDI</div>
+      <div class="hero-sub">where the force is restored</div>
+    </div>
+  </div>
+  <div class="welcome-body">
+    <div class="guest-card">
+      <div class="guest-card-eyebrow">Wholeheartedly Welcome</div>
+      <div class="guest-card-name" id="guest-name-display">Welcome</div>
+    </div>
+    <div class="menu-grid" id="main-menu-grid"></div>
+  </div>
+</div>
+
+<!-- HOUSE MANUAL -->
+<div class="screen" id="screen-manual">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Villa JEDI</div>
+    <div class="screen-title">House Manual</div>
+  </div>
+  <div class="manual-body" id="manual-list"></div>
+</div>
+
+<!-- FOOD -->
+<div class="screen" id="screen-food">
+  <div class="screen-header">
+    <div class="screen-eyebrow">In-Villa Dining</div>
+    <div class="screen-title">Food & Drinks</div>
+  </div>
+  <div class="items-list" id="food-list"></div>
+</div>
+
+<!-- CONCIERGE -->
+<div class="screen" id="screen-concierge">
+  <div class="screen-header">
+    <div class="screen-eyebrow">We Are Here</div>
+    <div class="screen-title">Concierge</div>
+  </div>
+  <div class="concierge-body">
+    <div class="concierge-intro">
+      <div class="concierge-intro-title">Available 08:00 — 22:00</div>
+      <div class="concierge-intro-text">Your comfort is our only concern. Reach us at any hour for anything you need — we are here.</div>
+    </div>
+    <a class="action-row" href="#" onclick="openWhatsApp('concierge');return false;">
+      <div class="action-row-body">
+        <div class="action-row-title">WhatsApp Concierge</div>
+        <div class="action-row-sub">Immediate assistance</div>
+      </div>
+      <span class="action-row-mark">→</span>
+    </a>
+    <a class="action-row" href="#" onclick="switchTab('transport');return false;">
+      <div class="action-row-body">
+        <div class="action-row-title">Arrange Transport</div>
+        <div class="action-row-sub">Grab, private driver, airport</div>
+      </div>
+      <span class="action-row-mark">→</span>
+    </a>
+    <a class="action-row" href="#" onclick="openOwnerContact();return false;">
+      <div class="action-row-body">
+        <div class="action-row-title">Contact Owner</div>
+        <div class="action-row-sub">Direct correspondence</div>
+      </div>
+      <span class="action-row-mark">→</span>
+    </a>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div class="screen" id="screen-services">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Curated For You</div>
+    <div class="screen-title">Services</div>
+  </div>
+  <div class="items-list" id="services-list"></div>
+</div>
+
+<!-- MUSIC -->
+<div class="screen" id="screen-music">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Sound & Silence</div>
+    <div class="screen-title">Music</div>
+  </div>
+  <div class="media-list" id="music-list"></div>
+  <div style="padding:0 28px; margin-top:8px;">
+    <a class="action-row" href="https://open.spotify.com" target="_blank">
+      <div class="action-row-body">
+        <div class="action-row-title">Open Spotify</div>
+        <div class="action-row-sub">Your own playlists</div>
+      </div>
+      <span class="action-row-mark">→</span>
+    </a>
+  </div>
+</div>
+
+<!-- MOVIES -->
+<div class="screen" id="screen-movies">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Evening Cinema</div>
+    <div class="screen-title">Movies</div>
+  </div>
+  <div class="media-list" id="movie-list"></div>
+  <div style="padding:0 28px; margin-top:8px;">
+    <a class="action-row" href="https://netflix.com" target="_blank">
+      <div class="action-row-body">
+        <div class="action-row-title">Open Netflix</div>
+        <div class="action-row-sub">Your own account</div>
+      </div>
+      <span class="action-row-mark">→</span>
+    </a>
+  </div>
+</div>
+
+<!-- LIGHTS -->
+<div class="screen" id="screen-lights">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Atmosphere</div>
+    <div class="screen-title">Lights</div>
+  </div>
+  <div class="lights-body" id="lights-list"></div>
+</div>
+
+<!-- MORE / INFO -->
+<div class="screen" id="screen-more">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Villa JEDI</div>
+    <div class="screen-title">Villa Info</div>
+  </div>
+  <div class="info-body" id="info-list"></div>
+</div>
+
+<!-- TRANSPORT -->
+<div class="screen" id="screen-transport">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Getting Around</div>
+    <div class="screen-title">Transport</div>
+  </div>
+  <div class="concierge-body">
+    <div class="concierge-intro">
+      <div class="concierge-intro-title">Bali at your pace</div>
+      <div class="concierge-intro-text">Whether it's a short ride to the beach or a full-day excursion, we can arrange it. Our driver knows every road worth taking.</div>
+    </div>
+    <a class="action-row" href="#" onclick="openGrab();return false;">
+      <div class="action-row-body">
+        <div class="action-row-title">Grab</div>
+        <div class="action-row-sub">On-demand ride, open the app</div>
+      </div>
+      <span class="action-row-mark">→</span>
+    </a>
+    <a class="action-row" href="#" onclick="openWhatsApp('concierge');return false;">
+      <div class="action-row-body">
+        <div class="action-row-title">Our Private Driver</div>
+        <div class="action-row-sub">Half day, full day, custom route</div>
+      </div>
+      <span class="action-row-mark">→</span>
+    </a>
+    <a class="action-row" href="#" onclick="openWhatsApp('concierge');return false;">
+      <div class="action-row-body">
+        <div class="action-row-title">Airport Transfer</div>
+        <div class="action-row-sub">Ngurah Rai — door to door, IDR 480,000</div>
+      </div>
+      <span class="action-row-mark">→</span>
+    </a>
+    <a class="action-row" href="#" onclick="openWhatsApp('concierge');return false;">
+      <div class="action-row-body">
+        <div class="action-row-title">Scooter Rental</div>
+        <div class="action-row-sub">Arrange through concierge</div>
+      </div>
+      <span class="action-row-mark">→</span>
+    </a>
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div id="detail-panel">
+  <div class="detail-nav" onclick="closeDetail()">
+    <span class="detail-nav-back">←</span>
+    <span class="detail-nav-label">Return</span>
+  </div>
+  <div class="detail-content" id="detail-body"></div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- TAB BAR -->
+<nav id="tabbar">
+  <div class="tab active" onclick="switchTab('welcome')" data-tab="welcome">
+    <div class="tab-icon">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>
+    <span class="tab-label">Home</span>
+  </div>
+  <div class="tab" onclick="switchTab('food')" data-tab="food">
+    <div class="tab-icon">
+      <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+    </div>
+    <span class="tab-label">Dining</span>
+  </div>
+  <div class="tab" onclick="switchTab('concierge')" data-tab="concierge">
+    <div class="tab-icon">
+      <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .99h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+    </div>
+    <span class="tab-label">Concierge</span>
+  </div>
+  <div class="tab" onclick="switchTab('services')" data-tab="services">
+    <div class="tab-icon">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <span class="tab-label">Services</span>
+  </div>
+  <div class="tab" onclick="switchTab('more')" data-tab="more">
+    <div class="tab-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+    </div>
+    <span class="tab-label">More</span>
+  </div>
+</nav>
+</div>
+
+<script>
+const CONFIG = {
+  guestName: "Maria & Fernandez",
+  conciergeWA: "+62811XXXXXXXX",
+  ownerWA: "+62811XXXXXXXX",
+  ownerEmail: "owner@villajedi.com",
+  villaAddress: "Jl. ..., Bali, Indonesia",
+};
+
+const MAIN_MENU = [
+  { num:"01", name:"About\nThis Villa",  sub:"Your guide to everything here",  tab:"manual" },
+  { num:"02", name:"Room\nService",      sub:"Food & drinks, day or night",     tab:"food" },
+  { num:"03", name:"Contact\nOur Staff", sub:"We are always nearby",            tab:"concierge" },
+  { num:"04", name:"Curated\nExtras",    sub:"Experiences worth having",        tab:"services" },
+  { num:"05", name:"Getting\nAround",    sub:"Transport & drivers",             tab:"transport" },
+  { num:"06", name:"Lights",              sub:"Set the atmosphere",              tab:"lights" },
+  { num:"07", name:"Music",               sub:"The right sound for now",         tab:"music" },
+  { num:"08", name:"Movies",              sub:"An evening in",                   tab:"movies" },
+  { num:"09", name:"Villa\nInfo",        sub:"WiFi, hours & essentials",        tab:"more" },
+];
+
+const HOUSE_MANUAL = [
+  { title:"Welcome",              content:"Selamat datang. We are honoured to host you at Villa JEDI. This is your sanctuary — please make yourself entirely at home." },
+  { title:"WiFi & Internet",      content:"Network: VillaJEDI_5G\nPassword: On the card by the coffee machine.\nSpeed: 100Mbps fibre optic." },
+  { title:"Pool & Outdoor",       content:"Pool hours: 7:00 — 22:00. Please shower before entering. Towels are in the outdoor cabinet. Sunbeds are yours at all hours." },
+  { title:"Kitchen & Dining",     content:"The kitchen is fully equipped. Everything in the fridge marked 'Welcome' is yours. Coffee machine instructions are on the counter." },
+  { title:"Air Conditioning",     content:"Each room has individual climate control. We recommend 24–26°C. Please switch off when leaving." },
+  { title:"Projector & Cinema",   content:"Power via the smart panel. Netflix is active on the Apple TV. For Spotify, please use your own account." },
+  { title:"Housekeeping",         content:"Daily service at 10:00. If you prefer privacy or a different time, simply send us a message." },
+  { title:"Check-out",            content:"Departure by 11:00. Keys on the table. Late check-out available upon request — please ask the evening before." },
+  { title:"Emergency",            content:"Emergency line: +62811XXXXXXXX\nBIMC Hospital Kuta: 15 minutes\nKimia Farma Clinic: 5 minutes" },
+  { title:"House Rules",          content:"No smoking indoors. No outside guests after 22:00 without notice. Please be mindful of neighbours. Thank you." },
+];
+
+const MENU_ITEMS = [
+  { cat:"Breakfast", name:"Nasi Goreng",        desc:"Fried rice, egg, chicken, vegetables",  usd:8,  idr:130000 },
+  { cat:"Breakfast", name:"Eggs Benedict",      desc:"Poached eggs, hollandaise, brioche",    usd:10, idr:160000 },
+  { cat:"Breakfast", name:"Tropical Fruit Bowl",desc:"Fresh local fruits, coconut yoghurt",   usd:7,  idr:112000 },
+  { cat:"Breakfast", name:"Pancakes",           desc:"Buttermilk, maple syrup, fresh berries",usd:8,  idr:128000 },
+  { cat:"Main",      name:"Mie Goreng",         desc:"Fried noodles, tofu, seasonal vegetables",usd:8,idr:130000 },
+  { cat:"Main",      name:"Grilled Fish",       desc:"Catch of the day, steamed rice, sambal", usd:15,idr:240000 },
+  { cat:"Main",      name:"Club Sandwich",      desc:"Triple-decker, fries, house pickle",    usd:12, idr:192000 },
+  { cat:"Snack",     name:"Spring Rolls",       desc:"Crispy vegetables, tamarind dip",       usd:6,  idr:96000  },
+  { cat:"Drinks",    name:"Young Coconut",      desc:"Straight from the garden",              usd:4,  idr:64000  },
+  { cat:"Drinks",    name:"Bali Coffee",        desc:"Local arabica, hot or iced",            usd:4,  idr:64000  },
+  { cat:"Drinks",    name:"Fresh Juice",        desc:"Watermelon, mango, or pineapple",       usd:5,  idr:80000  },
+  { cat:"Drinks",    name:"Bintang",            desc:"Indonesian lager, 330ml",               usd:5,  idr:80000  },
+];
+
+const SERVICES = [
+  { cat:"Experience", name:"Bonfire",           desc:"Firewood, setup, s'mores by the pool",  usd:25, idr:400000 },
+  { cat:"Experience", name:"Drone Session",     desc:"30-min aerial photography, edited",     usd:50, idr:800000 },
+  { cat:"Experience", name:"Sunset Cruise",     desc:"2-hour boat, open bar",                 usd:60, idr:960000 },
+  { cat:"Wellness",   name:"Balinese Massage",  desc:"60-min in-villa treatment",             usd:45, idr:720000 },
+  { cat:"Wellness",   name:"Private Yoga",      desc:"60-min session, personal instructor",   usd:40, idr:640000 },
+  { cat:"Keepsake",   name:"Yukata",            desc:"Traditional Japanese cotton robe",      usd:35, idr:560000 },
+  { cat:"Practical",  name:"Laundry",           desc:"Wash, press, fold — same day",          usd:10, idr:160000 },
+  { cat:"Practical",  name:"Airport Transfer",  desc:"Private car, Ngurah Rai Airport",       usd:30, idr:480000 },
+];
+
+const MUSIC = [
+  { label:"Villa Pick", title:"Bali Chill",          sub:"Daytime relaxation",     url:"https://open.spotify.com/playlist/37i9dQZF1DX4PP3DA4J0N8" },
+  { label:"Villa Pick", title:"Sunset Terrace",       sub:"Golden hour",            url:"https://open.spotify.com/playlist/37i9dQZF1DXdxTfd3LhFLB" },
+  { label:"Villa Pick", title:"Morning Breeze",       sub:"Gentle awakening",       url:"https://open.spotify.com/playlist/37i9dQZF1DX0SM0LYsmbMT" },
+  { label:"Villa Pick", title:"Deep by the Pool",     sub:"Afternoon energy",       url:"https://open.spotify.com/playlist/37i9dQZF1DX2TRYkJECvfC" },
+  { label:"Cultural",   title:"Balinese Gamelan",     sub:"Traditional ceremony",   url:"https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO" },
+  { label:"Villa Pick", title:"Jazz Dusk",            sub:"Slow evenings",          url:"https://open.spotify.com/playlist/37i9dQZF1DX0jgyAiPl8Af" },
+];
+
+const MOVIES = [
+  { label:"Travel",       title:"Eat Pray Love",   sub:"2010 · Drama",      url:"https://www.netflix.com/search?q=eat+pray+love" },
+  { label:"Adventure",    title:"The Beach",        sub:"2000 · Thriller",   url:"https://www.netflix.com/search?q=the+beach" },
+  { label:"Documentary",  title:"Baraka",           sub:"1992 · Visual",     url:"https://www.youtube.com/results?search_query=baraka+1992" },
+  { label:"Journey",      title:"Wild",             sub:"2014 · Drama",      url:"https://www.netflix.com/search?q=wild+2014" },
+  { label:"Adventure",    title:"Into the Wild",    sub:"2007 · True Story", url:"https://www.netflix.com/search?q=into+the+wild" },
+];
+
+const LIGHTS = [
+  { id:"living",    name:"Living Room",   on:true  },
+  { id:"pool",      name:"Pool",          on:false },
+  { id:"bedroom1",  name:"Bedroom I",     on:false },
+  { id:"bedroom2",  name:"Bedroom II",    on:false },
+  { id:"garden",    name:"Garden",        on:false },
+  { id:"entrance",  name:"Entrance",      on:true  },
+];
+
+const VILLA_INFO = [
+  { label:"WiFi",         value:"VillaJEDI_5G" },
+  { label:"Password",     value:"Card by coffee machine" },
+  { label:"Check-out",    value:"11:00" },
+  { label:"Pool",         value:"07:00 — 22:00" },
+  { label:"Breakfast",    value:"07:30 — 10:30" },
+  { label:"Location",     value:"Bali, Indonesia" },
+  { label:"Emergency",    value:"+62811XXXXXXXX" },
+];
+
+let lightStates = {};
+LIGHTS.forEach(l => lightStates[l.id] = l.on);
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('guest-name-display').textContent = CONFIG.guestName;
+  renderMenu(); renderManual(); renderFood();
+  renderServices(); renderMusic(); renderMovies();
+  renderLights(); renderInfo();
+});
+
+function renderMenu() {
+  document.getElementById('main-menu-grid').innerHTML = MAIN_MENU.map(m => `
+    <div class="menu-tile" onclick="switchTab('${m.tab}')">
+      <div class="menu-tile-num">${m.num}</div>
+      <div class="menu-tile-name">${m.name.replace('\n','<br>')}</div>
+      <div class="menu-tile-sub">${m.sub}</div>
+      <div class="menu-tile-arrow">→</div>
+    </div>`).join('');
+}
+
+function renderManual() {
+  document.getElementById('manual-list').innerHTML = HOUSE_MANUAL.map((item, i) => `
+    <div class="manual-item" onclick="this.classList.toggle('open')">
+      <div class="manual-item-header">
+        <div class="manual-item-left">
+          <div class="manual-item-num">0${i+1}</div>
+          <div class="manual-item-title">${item.title}</div>
+        </div>
+        <span class="manual-toggle">+</span>
+      </div>
+      <div class="manual-item-content">${item.content.replace(/\n/g,'<br>')}</div>
+    </div>`).join('');
+}
+
+function renderFood() {
+  document.getElementById('food-list').innerHTML = MENU_ITEMS.map(item => `
+    <div class="item-row" onclick="showDetail('food',${esc(item)})">
+      <div style="flex:1;min-width:0;">
+        <div class="item-row-cat">${item.cat}</div>
+        <div class="item-row-name">${item.name}</div>
+        <div class="item-row-desc">${item.desc}</div>
+      </div>
+      <div>
+        <div class="item-row-price">$${item.usd}</div>
+        <div class="item-row-idr">${item.idr.toLocaleString()}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderServices() {
+  document.getElementById('services-list').innerHTML = SERVICES.map(item => `
+    <div class="item-row" onclick="showDetail('service',${esc(item)})">
+      <div style="flex:1;min-width:0;">
+        <div class="item-row-cat">${item.cat}</div>
+        <div class="item-row-name">${item.name}</div>
+        <div class="item-row-desc">${item.desc}</div>
+      </div>
+      <div>
+        <div class="item-row-price">$${item.usd}</div>
+        <div class="item-row-idr">${item.idr.toLocaleString()}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderMusic() {
+  document.getElementById('music-list').innerHTML = MUSIC.map(item => `
+    <a class="media-row" href="${item.url}" target="_blank">
+      <div class="media-row-body">
+        <div class="media-row-label">${item.label}</div>
+        <div class="media-row-title">${item.title}</div>
+        <div class="media-row-sub">${item.sub}</div>
+      </div>
+      <span class="media-row-mark">→</span>
+    </a>`).join('');
+}
+
+function renderMovies() {
+  document.getElementById('movie-list').innerHTML = MOVIES.map(item => `
+    <a class="media-row" href="${item.url}" target="_blank">
+      <div class="media-row-body">
+        <div class="media-row-label">${item.label}</div>
+        <div class="media-row-title">${item.title}</div>
+        <div class="media-row-sub">${item.sub}</div>
+      </div>
+      <span class="media-row-mark">→</span>
+    </a>`).join('');
+}
+
+function renderLights() {
+  document.getElementById('lights-list').innerHTML = LIGHTS.map(l => `
+    <div class="light-row">
+      <div>
+        <div class="light-row-name">${l.name}</div>
+        <div class="light-row-status" id="ls-${l.id}">${lightStates[l.id]?'On':'Off'}</div>
+      </div>
+      <div class="toggle-wrap" onclick="toggleLight('${l.id}')">
+        <div class="toggle-track${lightStates[l.id]?' on':''}" id="lt-${l.id}">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderInfo() {
+  document.getElementById('info-list').innerHTML = VILLA_INFO.map(item => `
+    <div class="info-row">
+      <div class="info-label">${item.label}</div>
+      <div class="info-value">${item.value}</div>
+    </div>`).join('');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const s = document.getElementById('screen-'+tab);
+  if(s) s.classList.add('active');
+  const t = document.querySelector(`[data-tab="${tab}"]`);
+  if(t) t.classList.add('active');
+}
+
+function toggleLight(id) {
+  lightStates[id] = !lightStates[id];
+  const on = lightStates[id];
+  document.getElementById('lt-'+id).classList.toggle('on', on);
+  document.getElementById('ls-'+id).textContent = on ? 'On' : 'Off';
+  showToast(on ? 'Light on' : 'Light off');
+}
+
+function showDetail(type, item) {
+  const msg = type==='food'
+    ? `I would like to order: ${item.name} × 1`
+    : `I would like to request: ${item.name}`;
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-eyebrow">${item.cat}</div>
+    <div class="detail-title">${item.name}</div>
+    <div class="detail-rule"></div>
+    <div class="detail-desc">${item.desc}</div>
+    <div class="detail-price-block">
+      <div class="detail-price">$${item.usd}</div>
+      <div class="detail-price-idr">IDR ${item.idr.toLocaleString()}</div>
+    </div>
+    <button class="detail-cta" onclick="orderViaWA('${encodeURIComponent(msg)}')">
+      ${type==='food' ? 'Order via WhatsApp' : 'Request via WhatsApp'}
+    </button>`;
+  document.getElementById('detail-panel').classList.add('open');
+}
+
+function closeDetail() { document.getElementById('detail-panel').classList.remove('open'); }
+function orderViaWA(msg) { window.open(`https://wa.me/${CONFIG.conciergeWA.replace(/\D/g,'')}?text=${msg}`,'_blank'); }
+function openWhatsApp(t) { window.open(`https://wa.me/${CONFIG.conciergeWA.replace(/\D/g,'')}`,'_blank'); }
+function openGrab() { window.open('https://grab.com','_blank'); }
+function openOwnerContact() { window.open(`mailto:${CONFIG.ownerEmail}`,'_blank'); }
+function showToast(m) {
+  const t=document.getElementById('toast');
+  t.textContent=m; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+function esc(o) { return JSON.stringify(o).replace(/"/g,'&quot;'); }
+</script>
+</body>
+</html>
