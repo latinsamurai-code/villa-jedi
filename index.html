@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="VILLA JEDI">
 <meta name="theme-color" content="#080808">
 <link rel="manifest" href="manifest.json">
@@ -13,19 +13,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;600&family=Cinzel+Decorative:wght@300&family=EB+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
-  --void:    #080808;
-  --deep:    #0e0e0e;
-  --surface: #141414;
-  --lift:    #1c1c1c;
-  --border:  rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --amber:   #C8923A;
-  --amber2:  #E8B46A;
-  --ash:     #888077;
-  --pale:    #D4CFC8;
-  --white:   #F2EDE6;
-  --tab-h:   68px;
-  --r:       2px;
+  --void:     #060608;
+  --deep:     #0a0a0f;
+  --surface:  #111118;
+  --lift:     #1a1a24;
+  --border:   rgba(255,255,255,0.06);
+  --border2:  rgba(255,255,255,0.12);
+  --amber:    #C8923A;
+  --amber2:   #E8B46A;
+  --cyan:     #4FC3C8;
+  --cyan-dim: rgba(79,195,200,0.15);
+  --cyan-glow:rgba(79,195,200,0.08);
+  --ash:      #7a7570;
+  --pale:     #C8C3BC;
+  --white:    #EDE8E0;
+  --tab-h:    80px;
+  --safe-top: env(safe-area-inset-top, 20px);
+  --safe-bot: env(safe-area-inset-bottom, 20px);
 }
 
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -38,308 +42,291 @@ html, body {
   -webkit-font-smoothing:antialiased;
 }
 
-/* ─── Grain overlay ─── */
+/* Grain */
 body::before {
-  content:'';
-  position:fixed; inset:0; z-index:1000; pointer-events:none;
-  opacity:0.025;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size: 128px;
+  content:''; position:fixed; inset:0; z-index:999; pointer-events:none;
+  opacity:0.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:128px;
 }
 
-/* ─── App shell ─── */
-#app { display:flex; flex-direction:column; height:100vh; height:100dvh; position:relative; }
+#app { display:flex; flex-direction:column; height:100vh; height:100dvh; }
 
-/* ─── Screens ─── */
-.screen { display:none; flex:1; overflow-y:auto; overflow-x:hidden; padding-bottom:calc(var(--tab-h) + 20px); }
-.screen.active { display:block; animation: fadeIn 0.5s ease forwards; }
-@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.screen { display:none; flex:1; overflow-y:auto; overflow-x:hidden; padding-bottom:calc(var(--tab-h) + 24px); }
+.screen.active { display:block; animation:fadeIn 0.4s ease forwards; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
-/* ─── Screen header ─── */
+/* ── Screen Header ── */
 .screen-header {
-  padding:40px 28px 20px;
+  padding:36px 24px 22px;
   border-bottom:1px solid var(--border);
+  position:relative;
+}
+.screen-header::after {
+  content:''; position:absolute; bottom:-1px; left:24px; width:32px; height:1px;
+  background:var(--cyan);
 }
 .screen-eyebrow {
   font-family:'Cinzel', serif;
   font-size:9px; letter-spacing:5px; text-transform:uppercase;
-  color:var(--amber); margin-bottom:10px;
+  color:var(--cyan); margin-bottom:10px; opacity:0.8;
 }
 .screen-title {
   font-family:'Cinzel', serif;
-  font-size:28px; font-weight:300;
-  letter-spacing:3px; text-transform:uppercase;
-  color:var(--white); line-height:1.2;
+  font-size:28px; font-weight:300; letter-spacing:5px; text-transform:uppercase;
+  color:var(--white);
 }
 
 /* ════════════════════════════════
-   WELCOME SCREEN
+   WELCOME BODY
 ════════════════════════════════ */
-#screen-welcome { padding-bottom:calc(var(--tab-h) + 20px); }
+#screen-welcome { padding-bottom:calc(var(--tab-h) + 24px); }
+.welcome-body { padding:24px 24px 0; }
 
-.hero {
-  position:relative; height:46vh; min-height:280px;
-  overflow:hidden;
-}
-.hero-img {
-  position:absolute; inset:0; width:100%; height:100%;
-  object-fit:cover;
-  filter:brightness(0.35) contrast(1.1);
-}
-/* Cinematic letterbox lines */
-.hero-letterbox-top, .hero-letterbox-bot {
-  position:absolute; left:0; right:0; height:40px;
-  background:var(--void); z-index:2;
-}
-.hero-letterbox-top { top:0; }
-.hero-letterbox-bot { bottom:0; }
+/* ── Menu Grid ── */
+.menu-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 
-.hero-content {
-  position:absolute; inset:0; z-index:3;
-  display:flex; flex-direction:column;
-  justify-content:flex-end; padding:40px 28px;
-}
-.hero-rule {
-  width:32px; height:1px; background:var(--amber);
-  margin-bottom:16px;
-}
-.hero-title {
-  font-family:'Cinzel', serif;
-  font-size:38px; font-weight:300;
-  letter-spacing:8px; text-transform:uppercase;
-  color:var(--white); line-height:1;
-  margin-bottom:8px;
-}
-.hero-sub {
-  font-family:'EB Garamond', serif;
-  font-size:15px; font-style:italic;
-  color:var(--ash); letter-spacing:1px;
-}
-
-.welcome-body { padding:28px 28px 0; }
-
-.guest-card {
-  border:1px solid var(--border);
-  border-left:1px solid var(--amber);
-  padding:18px 22px; margin-bottom:32px;
-  background:rgba(200,146,58,0.04);
-}
-.guest-card-eyebrow {
-  font-family:'Cinzel', serif;
-  font-size:8px; letter-spacing:5px; text-transform:uppercase;
-  color:var(--amber); margin-bottom:8px;
-}
-.guest-card-name {
-  font-family:'Cinzel', serif;
-  font-size:22px; font-weight:300;
-  letter-spacing:3px; color:var(--white);
-}
-
-/* Menu grid */
-.menu-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); border:1px solid var(--border); }
 .menu-tile {
-  background:var(--void); padding:22px 18px;
-  cursor:pointer; transition:background 0.2s;
-  display:flex; flex-direction:column; gap:12px;
+  background:var(--surface);
+  border:1px solid rgba(255,255,255,0.08);
+  border-top:1px solid rgba(79,195,200,0.2);
+  border-radius:2px;
+  padding:22px 18px 20px;
+  cursor:pointer;
+  transition:all 0.2s ease;
+  display:flex; flex-direction:column; gap:10px;
+  position:relative; overflow:hidden;
   -webkit-user-select:none;
 }
-.menu-tile:active { background:var(--lift); }
+.menu-tile::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, var(--cyan), var(--amber), transparent);
+  opacity:0; transition:opacity 0.2s;
+}
+.menu-tile::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(ellipse 80% 60% at 0% 100%, rgba(79,195,200,0.04), transparent);
+}
+.menu-tile:active {
+  background:var(--lift);
+  border-color:rgba(79,195,200,0.4);
+  transform:scale(0.97);
+}
+.menu-tile:active::before { opacity:1; }
+
 .menu-tile-num {
   font-family:'Cinzel', serif;
-  font-size:9px; letter-spacing:3px; color:var(--amber); opacity:0.7;
+  font-size:9px; letter-spacing:3px; color:var(--cyan); opacity:0.6;
 }
 .menu-tile-name {
   font-family:'Cinzel', serif;
-  font-size:12px; font-weight:400;
-  letter-spacing:2.5px; text-transform:uppercase;
-  color:var(--pale); line-height:1.4;
+  font-size:16px; font-weight:400; letter-spacing:2px; text-transform:uppercase;
+  color:var(--white); line-height:1.3;
 }
 .menu-tile-sub {
   font-family:'EB Garamond', serif;
-  font-size:13px; font-style:italic;
-  color:var(--ash);
+  font-size:14px; font-style:italic; color:var(--ash);
 }
 .menu-tile-arrow {
-  font-size:16px; color:var(--amber); opacity:0.6;
-  font-style:normal; font-family:monospace;
+  font-family:monospace; font-size:16px;
+  color:var(--cyan); opacity:0.7; margin-top:4px;
 }
 
 /* ════════════════════════════════
    HOUSE MANUAL
 ════════════════════════════════ */
-.manual-body { padding:0 28px 0; }
+.manual-body { padding:0 24px; }
 .manual-item {
-  border-bottom:1px solid var(--border);
-  cursor:pointer;
+  border-bottom:1px solid var(--border); cursor:pointer;
 }
 .manual-item-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:20px 0;
+  display:flex; align-items:center; justify-content:space-between; padding:20px 0;
 }
-.manual-item-left { display:flex; flex-direction:column; gap:4px; }
 .manual-item-num {
   font-family:'Cinzel', serif;
-  font-size:8px; letter-spacing:4px; color:var(--amber); opacity:0.7;
+  font-size:8px; letter-spacing:4px; color:var(--cyan); opacity:0.6; margin-bottom:4px;
 }
 .manual-item-title {
   font-family:'Cinzel', serif;
-  font-size:13px; letter-spacing:2px; text-transform:uppercase;
-  color:var(--pale);
+  font-size:15px; letter-spacing:2px; text-transform:uppercase; color:var(--white);
 }
 .manual-toggle {
-  font-family:monospace; font-size:18px;
-  color:var(--amber); transition:transform 0.25s;
-  width:24px; text-align:center; flex-shrink:0;
+  width:28px; height:28px; border:1px solid var(--border2);
+  display:flex; align-items:center; justify-content:center;
+  font-family:monospace; font-size:16px; color:var(--cyan);
+  transition:all 0.2s; flex-shrink:0;
 }
-.manual-item.open .manual-toggle { transform:rotate(45deg); }
+.manual-item.open .manual-toggle { background:var(--cyan-dim); transform:rotate(45deg); }
 .manual-item-content {
-  max-height:0; overflow:hidden;
-  transition:max-height 0.3s ease, padding 0.3s ease;
-  font-size:16px; line-height:1.8;
-  color:var(--ash); font-style:italic;
-  padding:0;
+  max-height:0; overflow:hidden; transition:max-height 0.3s ease, padding 0.3s;
+  font-size:16px; line-height:1.85; color:var(--ash); font-style:italic; padding:0;
 }
-.manual-item.open .manual-item-content {
-  max-height:300px; padding-bottom:20px;
-}
+.manual-item.open .manual-item-content { max-height:300px; padding-bottom:20px; }
 
 /* ════════════════════════════════
-   FOOD / SERVICES CARDS
+   FOOD / SERVICES ROWS
 ════════════════════════════════ */
-.items-list { padding:0 28px; }
+.items-list { padding:0 24px; }
 .item-row {
   display:flex; align-items:flex-start; justify-content:space-between;
-  padding:22px 0; border-bottom:1px solid var(--border);
+  padding:20px 0; border-bottom:1px solid var(--border);
   cursor:pointer; transition:opacity 0.15s; gap:16px;
+  position:relative;
+}
+.item-row::after {
+  content:''; position:absolute; left:0; bottom:0; width:0; height:1px;
+  background:var(--cyan); transition:width 0.3s;
 }
 .item-row:active { opacity:0.6; }
+.item-row:active::after { width:100%; }
 .item-row-cat {
-  font-family:'Cinzel', serif;
-  font-size:8px; letter-spacing:4px; text-transform:uppercase;
-  color:var(--amber); margin-bottom:6px; opacity:0.8;
+  font-family:'Cinzel', serif; font-size:8px; letter-spacing:4px;
+  text-transform:uppercase; color:var(--amber); margin-bottom:5px; opacity:0.9;
 }
 .item-row-name {
-  font-family:'Cinzel', serif;
-  font-size:14px; letter-spacing:2px; text-transform:uppercase;
-  color:var(--pale); margin-bottom:4px;
+  font-family:'Cinzel', serif; font-size:16px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--white); margin-bottom:5px;
 }
-.item-row-desc {
-  font-size:14px; font-style:italic; color:var(--ash); line-height:1.5;
-}
+.item-row-desc { font-size:15px; font-style:italic; color:var(--ash); line-height:1.5; }
 .item-row-price {
-  font-family:'Cinzel', serif;
-  font-size:16px; font-weight:400;
-  color:var(--amber2); white-space:nowrap;
-  text-align:right; flex-shrink:0;
+  font-family:'Cinzel', serif; font-size:18px; color:var(--amber2);
+  white-space:nowrap; text-align:right; flex-shrink:0;
 }
-.item-row-idr {
-  font-family:'EB Garamond', serif;
-  font-size:11px; color:var(--ash);
-  text-align:right; margin-top:3px;
-}
+.item-row-idr { font-size:11px; color:var(--ash); text-align:right; margin-top:3px; font-style:italic; }
 
 /* ════════════════════════════════
-   CONCIERGE
+   CONCIERGE / ACTION ROWS
 ════════════════════════════════ */
-.concierge-body { padding:32px 28px; }
+.concierge-body { padding:24px 24px 0; }
 .concierge-intro {
-  margin-bottom:36px; padding-bottom:32px;
-  border-bottom:1px solid var(--border);
+  margin-bottom:28px; padding:20px;
+  background:linear-gradient(135deg, rgba(79,195,200,0.05) 0%, rgba(200,146,58,0.03) 100%);
+  border:1px solid rgba(79,195,200,0.15);
+  border-left:2px solid var(--cyan);
 }
-.concierge-intro-title {
-  font-family:'Cinzel', serif;
-  font-size:11px; letter-spacing:4px; text-transform:uppercase;
-  color:var(--ash); margin-bottom:14px;
+.concierge-intro-label {
+  font-family:'Cinzel', serif; font-size:8px; letter-spacing:5px;
+  text-transform:uppercase; color:var(--cyan); margin-bottom:10px; opacity:0.8;
 }
 .concierge-intro-text {
-  font-size:17px; font-style:italic; line-height:1.8; color:var(--pale);
+  font-size:17px; font-style:italic; line-height:1.85; color:var(--pale);
 }
-.action-row {
+
+/* Action button — clear, pressable */
+.action-btn {
   display:flex; align-items:center; justify-content:space-between;
-  padding:22px 0; border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg, var(--surface) 0%, rgba(20,20,28,0.9) 100%);
+  border:1px solid rgba(255,255,255,0.08);
+  border-left:2px solid var(--amber);
+  padding:20px 20px; margin-bottom:10px;
   cursor:pointer; text-decoration:none; color:inherit;
-  transition:opacity 0.15s;
+  transition:all 0.18s; border-radius:2px;
+  position:relative; overflow:hidden;
+  -webkit-user-select:none;
 }
-.action-row:active { opacity:0.5; }
-.action-row-body {}
-.action-row-title {
-  font-family:'Cinzel', serif;
-  font-size:13px; letter-spacing:2.5px; text-transform:uppercase;
-  color:var(--pale); margin-bottom:4px;
+.action-btn::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(ellipse 60% 100% at 0% 50%, rgba(200,146,58,0.06), transparent);
 }
-.action-row-sub { font-size:14px; font-style:italic; color:var(--ash); }
-.action-row-mark {
-  font-family:monospace; font-size:20px; color:var(--amber); flex-shrink:0;
+.action-btn:active {
+  background:var(--lift);
+  border-left-color:var(--cyan);
+  border-color:rgba(79,195,200,0.25);
+}
+.action-btn-body {}
+.action-btn-title {
+  font-family:'Cinzel', serif; font-size:15px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--white); margin-bottom:5px;
+}
+.action-btn-sub { font-size:15px; font-style:italic; color:var(--ash); line-height:1.4; }
+.action-btn-mark {
+  width:32px; height:32px; border:1px solid rgba(79,195,200,0.25);
+  display:flex; align-items:center; justify-content:center;
+  font-family:monospace; font-size:16px; color:var(--cyan); flex-shrink:0;
+}
+
+/* Cyan variant for primary actions */
+.action-btn.primary {
+  border-left-color:var(--cyan);
+  background:var(--cyan-glow);
+}
+.action-btn.primary .action-btn-mark {
+  background:var(--cyan-dim);
 }
 
 /* ════════════════════════════════
-   MUSIC / MOVIES
+   MEDIA ROWS
 ════════════════════════════════ */
-.media-list { padding:0 28px; }
+.media-list { padding:0 24px; }
 .media-row {
   display:flex; align-items:center; justify-content:space-between;
-  padding:20px 0; border-bottom:1px solid var(--border);
+  padding:18px 0; border-bottom:1px solid var(--border);
   cursor:pointer; text-decoration:none; color:inherit;
   transition:opacity 0.15s; gap:16px;
 }
 .media-row:active { opacity:0.5; }
 .media-row-body { flex:1; min-width:0; }
 .media-row-label {
-  font-family:'Cinzel', serif;
-  font-size:8px; letter-spacing:4px; text-transform:uppercase;
-  color:var(--amber); margin-bottom:6px; opacity:0.8;
+  font-family:'Cinzel', serif; font-size:8px; letter-spacing:4px;
+  text-transform:uppercase; color:var(--amber); margin-bottom:5px; opacity:0.9;
 }
 .media-row-title {
-  font-family:'Cinzel', serif;
-  font-size:14px; letter-spacing:1.5px;
-  text-transform:uppercase; color:var(--pale);
-  margin-bottom:3px;
+  font-family:'Cinzel', serif; font-size:16px; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--white); margin-bottom:4px;
 }
-.media-row-sub { font-size:14px; font-style:italic; color:var(--ash); }
-.media-row-mark { font-family:monospace; font-size:18px; color:var(--amber); flex-shrink:0; }
+.media-row-sub { font-size:15px; font-style:italic; color:var(--ash); }
+.media-row-mark {
+  width:32px; height:32px; border:1px solid var(--border2);
+  display:flex; align-items:center; justify-content:center;
+  font-family:monospace; font-size:14px; color:var(--cyan); flex-shrink:0;
+}
 
 /* ════════════════════════════════
    LIGHTS
 ════════════════════════════════ */
-.lights-body { padding:0 28px; }
+.lights-body { padding:0 24px; }
 .light-row {
   display:flex; align-items:center; justify-content:space-between;
-  padding:22px 0; border-bottom:1px solid var(--border); gap:16px;
+  padding:20px 0; border-bottom:1px solid var(--border); gap:16px;
 }
 .light-row-name {
-  font-family:'Cinzel', serif;
-  font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--pale);
+  font-family:'Cinzel', serif; font-size:13px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--pale);
 }
 .light-row-status { font-size:13px; font-style:italic; color:var(--ash); margin-top:3px; }
-/* Toggle */
+
+/* Toggle — pill style with glow */
 .toggle-wrap { cursor:pointer; flex-shrink:0; }
 .toggle-track {
-  width:48px; height:26px; border-radius:0;
+  width:52px; height:28px; border-radius:14px;
   border:1px solid var(--border2);
   background:var(--surface); position:relative;
-  transition:background 0.3s, border-color 0.3s;
+  transition:background 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
-.toggle-track.on { background:rgba(200,146,58,0.15); border-color:var(--amber); }
+.toggle-track.on {
+  background:rgba(79,195,200,0.15);
+  border-color:var(--cyan);
+  box-shadow:0 0 12px rgba(79,195,200,0.2);
+}
 .toggle-knob {
   position:absolute; top:3px; left:3px;
-  width:18px; height:18px;
+  width:20px; height:20px; border-radius:50%;
   background:var(--ash);
   transition:left 0.25s, background 0.25s;
 }
-.toggle-track.on .toggle-knob { left:25px; background:var(--amber); }
+.toggle-track.on .toggle-knob { left:27px; background:var(--cyan); }
 
 /* ════════════════════════════════
-   INFO TILES
+   VILLA INFO
 ════════════════════════════════ */
-.info-body { padding:0 28px; }
+.info-body { padding:0 24px; }
 .info-row {
   display:flex; justify-content:space-between; align-items:baseline;
-  padding:18px 0; border-bottom:1px solid var(--border); gap:20px;
+  padding:16px 0; border-bottom:1px solid var(--border); gap:20px;
 }
 .info-label {
-  font-family:'Cinzel', serif;
-  font-size:9px; letter-spacing:4px; text-transform:uppercase; color:var(--ash);
-  white-space:nowrap;
+  font-family:'Cinzel', serif; font-size:9px; letter-spacing:4px;
+  text-transform:uppercase; color:var(--ash); white-space:nowrap;
 }
 .info-value { font-size:15px; color:var(--pale); text-align:right; }
 
@@ -356,87 +343,91 @@ body::before {
 #detail-panel.open { transform:translateY(0); }
 
 .detail-nav {
-  padding:20px 28px 16px;
+  padding:18px 24px 16px;
   border-bottom:1px solid var(--border);
   display:flex; align-items:center; gap:12px;
   cursor:pointer; position:sticky; top:0;
-  background:var(--void); z-index:10;
+  background:rgba(6,6,8,0.95); backdrop-filter:blur(12px); z-index:10;
 }
 .detail-nav-back {
-  font-family:monospace; font-size:18px; color:var(--amber);
+  width:32px; height:32px; border:1px solid var(--border2);
+  display:flex; align-items:center; justify-content:center;
+  font-family:monospace; font-size:16px; color:var(--cyan);
 }
 .detail-nav-label {
-  font-family:'Cinzel', serif;
-  font-size:9px; letter-spacing:4px; text-transform:uppercase; color:var(--ash);
+  font-family:'Cinzel', serif; font-size:9px; letter-spacing:4px;
+  text-transform:uppercase; color:var(--ash);
 }
-.detail-content { padding:36px 28px 60px; }
+
+.detail-content { padding:36px 24px 60px; }
 .detail-eyebrow {
-  font-family:'Cinzel', serif;
-  font-size:9px; letter-spacing:5px; text-transform:uppercase;
-  color:var(--amber); margin-bottom:16px;
+  font-family:'Cinzel', serif; font-size:9px; letter-spacing:5px;
+  text-transform:uppercase; color:var(--amber); margin-bottom:14px;
 }
 .detail-title {
-  font-family:'Cinzel', serif;
-  font-size:28px; font-weight:300; letter-spacing:4px; text-transform:uppercase;
-  color:var(--white); margin-bottom:16px; line-height:1.3;
+  font-family:'Cinzel', serif; font-size:26px; font-weight:300;
+  letter-spacing:4px; text-transform:uppercase; color:var(--white);
+  margin-bottom:16px; line-height:1.3;
 }
-.detail-rule { width:28px; height:1px; background:var(--amber); margin-bottom:20px; }
+.detail-rule { width:28px; height:1px; background:var(--cyan); margin-bottom:20px; }
 .detail-desc {
   font-size:17px; font-style:italic; line-height:1.9;
   color:var(--ash); margin-bottom:32px;
 }
-.detail-price-block { margin-bottom:36px; }
 .detail-price {
-  font-family:'Cinzel', serif;
-  font-size:36px; font-weight:300; color:var(--amber2); letter-spacing:2px;
+  font-family:'Cinzel', serif; font-size:36px; font-weight:300;
+  color:var(--amber2); letter-spacing:2px;
 }
-.detail-price-idr { font-size:13px; font-style:italic; color:var(--ash); margin-top:4px; }
+.detail-price-idr { font-size:13px; font-style:italic; color:var(--ash); margin-top:4px; margin-bottom:32px; }
+
 .detail-cta {
   width:100%; padding:18px 0;
-  background:transparent;
-  border:1px solid var(--amber);
-  color:var(--amber2);
-  font-family:'Cinzel', serif;
-  font-size:11px; letter-spacing:5px; text-transform:uppercase;
+  background:var(--cyan-dim);
+  border:1px solid var(--cyan);
+  color:var(--cyan);
+  font-family:'Cinzel', serif; font-size:11px; letter-spacing:5px; text-transform:uppercase;
   cursor:pointer; transition:all 0.2s;
+  box-shadow:0 0 20px rgba(79,195,200,0.1);
 }
-.detail-cta:active { background:rgba(200,146,58,0.1); }
+.detail-cta:active { background:rgba(79,195,200,0.25); }
 
 /* ════════════════════════════════
    TAB BAR
 ════════════════════════════════ */
 #tabbar {
   height:var(--tab-h);
-  background:var(--void);
+  background:rgba(6,6,8,0.97);
   border-top:1px solid var(--border);
   display:flex; align-items:center;
   flex-shrink:0; position:relative; z-index:50;
 }
+/* Top accent line on active tab */
 .tab {
   flex:1; display:flex; flex-direction:column; align-items:center;
   gap:5px; padding:10px 4px; cursor:pointer;
-  transition:opacity 0.2s; color:var(--ash);
-  -webkit-user-select:none;
+  transition:all 0.2s; color:var(--ash);
+  position:relative; -webkit-user-select:none;
 }
-.tab.active { color:var(--amber); }
+.tab::before {
+  content:''; position:absolute; top:0; left:20%; right:20%; height:1px;
+  background:var(--cyan); opacity:0; transition:opacity 0.2s;
+}
+.tab.active { color:var(--cyan); }
+.tab.active::before { opacity:1; }
 .tab:active { opacity:0.5; }
-.tab-icon {
-  width:20px; height:20px;
-  display:flex; align-items:center; justify-content:center;
-}
-/* SVG line icons */
-.tab-icon svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.2; stroke-linecap:round; stroke-linejoin:round; }
-.tab-label {
-  font-family:'Cinzel', serif;
-  font-size:7px; letter-spacing:2px; text-transform:uppercase;
-}
 
-/* Toast */
+.tab-icon { width:20px; height:20px; display:flex; align-items:center; justify-content:center; }
+.tab-icon svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.2; stroke-linecap:round; stroke-linejoin:round; }
+.tab-label { font-family:'Cinzel', serif; font-size:7px; letter-spacing:1.5px; text-transform:uppercase; }
+
+/* ════════════════════════════════
+   TOAST
+════════════════════════════════ */
 #toast {
   position:fixed; bottom:calc(var(--tab-h) + 16px); left:50%;
   transform:translateX(-50%) translateY(10px);
-  background:var(--amber); color:var(--void);
-  padding:10px 24px;
+  background:var(--cyan-dim); border:1px solid var(--cyan);
+  color:var(--cyan); padding:10px 24px;
   font-family:'Cinzel', serif; font-size:9px; letter-spacing:3px; text-transform:uppercase;
   opacity:0; transition:all 0.3s; pointer-events:none; z-index:200;
   white-space:nowrap;
@@ -444,6 +435,186 @@ body::before {
 #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
 .screen::-webkit-scrollbar { display:none; }
+
+/* ════════════════════════════════
+   WELCOME TOP — Big greeting
+════════════════════════════════ */
+.welcome-top {
+  padding: 48px 24px 28px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.welcome-top::after {
+  content:''; position:absolute; bottom:-1px; left:24px; width:48px; height:1px;
+  background:var(--cyan);
+}
+.welcome-greeting {
+  font-family:'Cinzel', serif;
+  font-size:10px; letter-spacing:6px; text-transform:uppercase;
+  color:var(--cyan); opacity:0.8; margin-bottom:12px;
+}
+.welcome-name {
+  font-family:'Cinzel', serif;
+  font-size:36px; font-weight:300; letter-spacing:4px;
+  color:var(--white); line-height:1.2;
+}
+
+/* ════════════════════════════════
+   TAB BAR — Home + Brand
+════════════════════════════════ */
+.tab-brand {
+  flex:1; display:flex; flex-direction:column;
+  align-items:flex-end; justify-content:center;
+  padding-right:24px; gap:3px;
+}
+.tab-brand-title {
+  font-family:'Cinzel', serif;
+  font-size:13px; font-weight:400; letter-spacing:5px;
+  color:var(--pale); text-transform:uppercase;
+}
+.tab-brand-sub {
+  font-family:'EB Garamond', serif;
+  font-size:13px; font-style:italic;
+  color:var(--ash);
+}
+
+/* Screen header rule line */
+.screen-header-rule {
+  width:32px; height:1px; background:var(--cyan); margin-bottom:12px;
+}
+
+/* ════════════════════════════════
+   iPAD OPTIMISATION
+════════════════════════════════ */
+
+/* Safe area + larger tap targets */
+#app {
+  padding-top: var(--safe-top);
+}
+#tabbar {
+  padding-bottom: var(--safe-bot);
+  height: calc(var(--tab-h) + var(--safe-bot));
+}
+.screen {
+  padding-bottom: calc(var(--tab-h) + var(--safe-bot) + 32px);
+}
+
+/* iPad: 2-column layout for action buttons on wider screens */
+@media (min-width: 600px) {
+
+  /* Hero taller on iPad */
+  .hero { height: 38vh; min-height: 320px; padding: 48px 40px; }
+
+  .welcome-body { padding: 32px 40px 0; }
+  .guest-card { padding: 22px 28px; margin-bottom: 32px; }
+  .welcome-name { font-size: 48px; letter-spacing: 5px; }
+  .welcome-greeting { font-size: 12px; letter-spacing: 7px; }
+  .welcome-top { padding: 56px 40px 36px; }
+  .tab-brand-title { font-size: 15px; letter-spacing: 6px; }
+  .tab-brand-sub { font-size: 14px; }
+
+  /* 3-column menu on iPad */
+  .menu-grid { grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .menu-tile { padding: 28px 22px 24px; gap: 14px; }
+  .menu-tile-name { font-size: 18px; }
+  .menu-tile-sub { font-size: 15px; }
+
+  /* Screen headers bigger */
+  .screen-header { padding: 44px 40px 26px; }
+  .screen-title { font-size: 34px; letter-spacing: 6px; }
+  .screen-eyebrow { font-size: 10px; letter-spacing: 6px; }
+
+  /* Wider content areas */
+  .manual-body,
+  .items-list,
+  .media-list,
+  .lights-body,
+  .info-body { padding: 0 40px; }
+
+  .concierge-body { padding: 32px 40px 0; }
+
+  /* 2-column food/services grid on iPad */
+  .items-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 0 40px;
+  }
+  .item-row {
+    padding: 24px 20px 24px 0;
+  }
+  .item-row:nth-child(even) {
+    padding: 24px 0 24px 20px;
+    border-left: 1px solid var(--border);
+  }
+
+  /* Bigger action buttons */
+  .action-btn { padding: 24px 24px; margin-bottom: 12px; }
+  .action-btn-title { font-size: 17px; letter-spacing: 2.5px; }
+  .action-btn-sub { font-size: 16px; }
+  .action-btn-mark { width: 38px; height: 38px; font-size: 18px; }
+
+  /* Media rows */
+  .media-row { padding: 22px 0; }
+  .media-row-title { font-size: 18px; }
+  .media-row-sub { font-size: 16px; }
+
+  /* 2-col music on iPad */
+  .media-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 0 40px;
+  }
+  .media-row:nth-child(even) {
+    padding-left: 24px;
+    border-left: 1px solid var(--border);
+  }
+
+  /* Lights */
+  .light-row { padding: 26px 0; }
+  .light-row-name { font-size: 16px; letter-spacing: 2.5px; }
+  .light-row-status { font-size: 15px; }
+  .toggle-track { width: 62px; height: 34px; border-radius: 17px; }
+  .toggle-knob { width: 26px; height: 26px; top: 3px; left: 3px; }
+  .toggle-track.on .toggle-knob { left: 31px; }
+
+  /* Info rows */
+  .info-row { padding: 22px 0; }
+  .info-label { font-size: 11px; letter-spacing: 5px; }
+  .info-value { font-size: 18px; }
+
+  /* Manual items */
+  .manual-item-title { font-size: 17px; }
+  .manual-item-content { font-size: 17px; line-height: 2; }
+  .manual-toggle { width: 36px; height: 36px; font-size: 18px; }
+
+  /* Tab bar */
+  .tab-icon svg { width: 22px; height: 22px; }
+  .tab-label { font-size: 9px; letter-spacing: 2px; }
+  .tab { gap: 6px; }
+
+  /* Detail panel */
+  .detail-content { padding: 48px 40px 80px; max-width: 640px; }
+  .detail-title { font-size: 32px; }
+  .detail-price { font-size: 44px; }
+  .detail-desc { font-size: 19px; }
+  .detail-cta { font-size: 13px; letter-spacing: 6px; padding: 22px 0; }
+
+  /* Toast */
+  #toast { font-size: 11px; letter-spacing: 4px; padding: 14px 32px; }
+}
+
+/* iPad landscape — side-by-side layout */
+@media (min-width: 900px) {
+  .menu-grid { grid-template-columns: repeat(3, 1fr); }
+
+  .items-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .concierge-intro-text { font-size: 19px; }
+}
 </style>
 </head>
 <body>
@@ -451,21 +622,11 @@ body::before {
 
 <!-- WELCOME -->
 <div class="screen active" id="screen-welcome">
-  <div class="hero">
-    <img class="hero-img" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&q=80" alt="">
-    <div class="hero-letterbox-top"></div>
-    <div class="hero-letterbox-bot"></div>
-    <div class="hero-content">
-      <div class="hero-rule"></div>
-      <div class="hero-title">Villa JEDI</div>
-      <div class="hero-sub">where the force is restored</div>
-    </div>
+  <div class="welcome-top">
+    <div class="welcome-greeting">Wholeheartedly Welcome</div>
+    <div class="welcome-name" id="guest-name-display">Maria &amp; Fernandez</div>
   </div>
   <div class="welcome-body">
-    <div class="guest-card">
-      <div class="guest-card-eyebrow">Wholeheartedly Welcome</div>
-      <div class="guest-card-name" id="guest-name-display">Welcome</div>
-    </div>
     <div class="menu-grid" id="main-menu-grid"></div>
   </div>
 </div>
@@ -473,6 +634,7 @@ body::before {
 <!-- HOUSE MANUAL -->
 <div class="screen" id="screen-manual">
   <div class="screen-header">
+    <div class="screen-header-rule"></div>
     <div class="screen-eyebrow">Villa JEDI</div>
     <div class="screen-title">House Manual</div>
   </div>
@@ -482,6 +644,7 @@ body::before {
 <!-- FOOD -->
 <div class="screen" id="screen-food">
   <div class="screen-header">
+    <div class="screen-header-rule"></div>
     <div class="screen-eyebrow">In-Villa Dining</div>
     <div class="screen-title">Food & Drinks</div>
   </div>
@@ -491,6 +654,7 @@ body::before {
 <!-- CONCIERGE -->
 <div class="screen" id="screen-concierge">
   <div class="screen-header">
+    <div class="screen-header-rule"></div>
     <div class="screen-eyebrow">We Are Here</div>
     <div class="screen-title">Concierge</div>
   </div>
@@ -499,26 +663,19 @@ body::before {
       <div class="concierge-intro-title">Available 08:00 — 22:00</div>
       <div class="concierge-intro-text">Your comfort is our only concern. Reach us at any hour for anything you need — we are here.</div>
     </div>
-    <a class="action-row" href="#" onclick="openWhatsApp('concierge');return false;">
-      <div class="action-row-body">
-        <div class="action-row-title">WhatsApp Concierge</div>
-        <div class="action-row-sub">Immediate assistance</div>
+    <a class="action-btn primary" href="#" onclick="openWhatsApp('concierge');return false;">
+      <div class="action-btn-body">
+        <div class="action-btn-title">Concierge</div>
+        <div class="action-btn-sub">Contact our staff directly</div>
       </div>
-      <span class="action-row-mark">→</span>
+      <span class="action-btn-mark">→</span>
     </a>
-    <a class="action-row" href="#" onclick="switchTab('transport');return false;">
-      <div class="action-row-body">
-        <div class="action-row-title">Arrange Transport</div>
-        <div class="action-row-sub">Grab, private driver, airport</div>
+    <a class="action-btn" href="#" onclick="openOwnerContact();return false;">
+      <div class="action-btn-body">
+        <div class="action-btn-title">Suggestions to the Management</div>
+        <div class="action-btn-sub">Share your thoughts with us</div>
       </div>
-      <span class="action-row-mark">→</span>
-    </a>
-    <a class="action-row" href="#" onclick="openOwnerContact();return false;">
-      <div class="action-row-body">
-        <div class="action-row-title">Contact Owner</div>
-        <div class="action-row-sub">Direct correspondence</div>
-      </div>
-      <span class="action-row-mark">→</span>
+      <span class="action-btn-mark">→</span>
     </a>
   </div>
 </div>
@@ -526,6 +683,7 @@ body::before {
 <!-- SERVICES -->
 <div class="screen" id="screen-services">
   <div class="screen-header">
+    <div class="screen-header-rule"></div>
     <div class="screen-eyebrow">Curated For You</div>
     <div class="screen-title">Services</div>
   </div>
@@ -535,17 +693,18 @@ body::before {
 <!-- MUSIC -->
 <div class="screen" id="screen-music">
   <div class="screen-header">
+    <div class="screen-header-rule"></div>
     <div class="screen-eyebrow">Sound & Silence</div>
     <div class="screen-title">Music</div>
   </div>
   <div class="media-list" id="music-list"></div>
   <div style="padding:0 28px; margin-top:8px;">
-    <a class="action-row" href="https://open.spotify.com" target="_blank">
-      <div class="action-row-body">
-        <div class="action-row-title">Open Spotify</div>
-        <div class="action-row-sub">Your own playlists</div>
+    <a class="action-btn" href="https://open.spotify.com" target="_blank">
+      <div class="action-btn-body">
+        <div class="action-btn-title">Open Spotify</div>
+        <div class="action-btn-sub">Your own playlists</div>
       </div>
-      <span class="action-row-mark">→</span>
+      <span class="action-btn-mark">→</span>
     </a>
   </div>
 </div>
@@ -553,17 +712,18 @@ body::before {
 <!-- MOVIES -->
 <div class="screen" id="screen-movies">
   <div class="screen-header">
+    <div class="screen-header-rule"></div>
     <div class="screen-eyebrow">Evening Cinema</div>
     <div class="screen-title">Movies</div>
   </div>
   <div class="media-list" id="movie-list"></div>
   <div style="padding:0 28px; margin-top:8px;">
-    <a class="action-row" href="https://netflix.com" target="_blank">
-      <div class="action-row-body">
-        <div class="action-row-title">Open Netflix</div>
-        <div class="action-row-sub">Your own account</div>
+    <a class="action-btn" href="https://netflix.com" target="_blank">
+      <div class="action-btn-body">
+        <div class="action-btn-title">Open Netflix</div>
+        <div class="action-btn-sub">Your own account</div>
       </div>
-      <span class="action-row-mark">→</span>
+      <span class="action-btn-mark">→</span>
     </a>
   </div>
 </div>
@@ -571,6 +731,7 @@ body::before {
 <!-- LIGHTS -->
 <div class="screen" id="screen-lights">
   <div class="screen-header">
+    <div class="screen-header-rule"></div>
     <div class="screen-eyebrow">Atmosphere</div>
     <div class="screen-title">Lights</div>
   </div>
@@ -580,15 +741,58 @@ body::before {
 <!-- MORE / INFO -->
 <div class="screen" id="screen-more">
   <div class="screen-header">
+    <div class="screen-header-rule"></div>
     <div class="screen-eyebrow">Villa JEDI</div>
-    <div class="screen-title">Villa Info</div>
+    <div class="screen-title">More</div>
+  </div>
+  <div style="padding:0 28px;">
+    <a class="action-btn" href="#" onclick="switchTab('manual');return false;">
+      <div class="action-btn-body">
+        <div class="action-btn-title">About This Villa</div>
+        <div class="action-btn-sub">House manual & guidelines</div>
+      </div>
+      <span class="action-btn-mark">→</span>
+    </a>
   </div>
   <div class="info-body" id="info-list"></div>
+</div>
+
+<!-- ENTERTAINMENT -->
+<div class="screen" id="screen-entertainment">
+  <div class="screen-header">
+    <div class="screen-header-rule"></div>
+    <div class="screen-eyebrow">Your Evening</div>
+    <div class="screen-title">Entertainment</div>
+  </div>
+  <div class="concierge-body">
+    <a class="action-btn" href="#" onclick="switchTab('music');return false;">
+      <div class="action-btn-body">
+        <div class="action-btn-title">Music</div>
+        <div class="action-btn-sub">Villa playlists & Spotify</div>
+      </div>
+      <span class="action-btn-mark">→</span>
+    </a>
+    <a class="action-btn" href="#" onclick="switchTab('movies');return false;">
+      <div class="action-btn-body">
+        <div class="action-btn-title">Movies</div>
+        <div class="action-btn-sub">Villa picks & Netflix</div>
+      </div>
+      <span class="action-btn-mark">→</span>
+    </a>
+    <a class="action-btn" href="#" onclick="switchTab('lights');return false;">
+      <div class="action-btn-body">
+        <div class="action-btn-title">Lights</div>
+        <div class="action-btn-sub">Set the atmosphere</div>
+      </div>
+      <span class="action-btn-mark">→</span>
+    </a>
+  </div>
 </div>
 
 <!-- TRANSPORT -->
 <div class="screen" id="screen-transport">
   <div class="screen-header">
+    <div class="screen-header-rule"></div>
     <div class="screen-eyebrow">Getting Around</div>
     <div class="screen-title">Transport</div>
   </div>
@@ -597,33 +801,33 @@ body::before {
       <div class="concierge-intro-title">Bali at your pace</div>
       <div class="concierge-intro-text">Whether it's a short ride to the beach or a full-day excursion, we can arrange it. Our driver knows every road worth taking.</div>
     </div>
-    <a class="action-row" href="#" onclick="openGrab();return false;">
-      <div class="action-row-body">
-        <div class="action-row-title">Grab</div>
-        <div class="action-row-sub">On-demand ride, open the app</div>
+    <a class="action-btn" href="#" onclick="openGrab();return false;">
+      <div class="action-btn-body">
+        <div class="action-btn-title">Grab</div>
+        <div class="action-btn-sub">On-demand ride, open the app</div>
       </div>
-      <span class="action-row-mark">→</span>
+      <span class="action-btn-mark">→</span>
     </a>
-    <a class="action-row" href="#" onclick="openWhatsApp('concierge');return false;">
-      <div class="action-row-body">
-        <div class="action-row-title">Our Private Driver</div>
-        <div class="action-row-sub">Half day, full day, custom route</div>
+    <a class="action-btn" href="#" onclick="openWhatsApp('concierge');return false;">
+      <div class="action-btn-body">
+        <div class="action-btn-title">Our Private Driver</div>
+        <div class="action-btn-sub">Half day, full day, custom route</div>
       </div>
-      <span class="action-row-mark">→</span>
+      <span class="action-btn-mark">→</span>
     </a>
-    <a class="action-row" href="#" onclick="openWhatsApp('concierge');return false;">
-      <div class="action-row-body">
-        <div class="action-row-title">Airport Transfer</div>
-        <div class="action-row-sub">Ngurah Rai — door to door, IDR 480,000</div>
+    <a class="action-btn" href="#" onclick="openWhatsApp('concierge');return false;">
+      <div class="action-btn-body">
+        <div class="action-btn-title">Airport Transfer</div>
+        <div class="action-btn-sub">Ngurah Rai — door to door, IDR 480,000</div>
       </div>
-      <span class="action-row-mark">→</span>
+      <span class="action-btn-mark">→</span>
     </a>
-    <a class="action-row" href="#" onclick="openWhatsApp('concierge');return false;">
-      <div class="action-row-body">
-        <div class="action-row-title">Scooter Rental</div>
-        <div class="action-row-sub">Arrange through concierge</div>
+    <a class="action-btn" href="#" onclick="openWhatsApp('concierge');return false;">
+      <div class="action-btn-body">
+        <div class="action-btn-title">Scooter Rental</div>
+        <div class="action-btn-sub">Arrange through concierge</div>
       </div>
-      <span class="action-row-mark">→</span>
+      <span class="action-btn-mark">→</span>
     </a>
   </div>
 </div>
@@ -648,29 +852,9 @@ body::before {
     </div>
     <span class="tab-label">Home</span>
   </div>
-  <div class="tab" onclick="switchTab('food')" data-tab="food">
-    <div class="tab-icon">
-      <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-    </div>
-    <span class="tab-label">Dining</span>
-  </div>
-  <div class="tab" onclick="switchTab('concierge')" data-tab="concierge">
-    <div class="tab-icon">
-      <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .99h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-    </div>
-    <span class="tab-label">Concierge</span>
-  </div>
-  <div class="tab" onclick="switchTab('services')" data-tab="services">
-    <div class="tab-icon">
-      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-    </div>
-    <span class="tab-label">Services</span>
-  </div>
-  <div class="tab" onclick="switchTab('more')" data-tab="more">
-    <div class="tab-icon">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-    </div>
-    <span class="tab-label">More</span>
+  <div class="tab-brand">
+    <div class="tab-brand-title">VILLA JEDI</div>
+    <div class="tab-brand-sub">where the force is restored</div>
   </div>
 </nav>
 </div>
@@ -685,15 +869,12 @@ const CONFIG = {
 };
 
 const MAIN_MENU = [
-  { num:"01", name:"About\nThis Villa",  sub:"Your guide to everything here",  tab:"manual" },
-  { num:"02", name:"Room\nService",      sub:"Food & drinks, day or night",     tab:"food" },
-  { num:"03", name:"Contact\nOur Staff", sub:"We are always nearby",            tab:"concierge" },
-  { num:"04", name:"Curated\nExtras",    sub:"Experiences worth having",        tab:"services" },
-  { num:"05", name:"Getting\nAround",    sub:"Transport & drivers",             tab:"transport" },
-  { num:"06", name:"Lights",              sub:"Set the atmosphere",              tab:"lights" },
-  { num:"07", name:"Music",               sub:"The right sound for now",         tab:"music" },
-  { num:"08", name:"Movies",              sub:"An evening in",                   tab:"movies" },
-  { num:"09", name:"Villa\nInfo",        sub:"WiFi, hours & essentials",        tab:"more" },
+  { num:"01", name:"Concierge",      sub:"Contact our staff",           tab:"concierge",     color:"#4FC3C8", glow:"rgba(79,195,200,0.12)"  },
+  { num:"02", name:"Dining",         sub:"Food & drinks, day or night", tab:"food",          color:"#E8803A", glow:"rgba(232,128,58,0.12)"  },
+  { num:"03", name:"Transportation", sub:"Drivers & getting around",    tab:"transport",     color:"#7EC8A0", glow:"rgba(126,200,160,0.12)" },
+  { num:"04", name:"Entertainment",  sub:"Music, movies & lights",      tab:"entertainment", color:"#A07EC8", glow:"rgba(160,126,200,0.12)" },
+  { num:"05", name:"Services",       sub:"Curated extras & experiences",tab:"services",      color:"#C8A03A", glow:"rgba(200,160,58,0.12)"  },
+  { num:"06", name:"More",           sub:"Villa info & house manual",   tab:"more",          color:"#C87EA0", glow:"rgba(200,126,160,0.12)" },
 ];
 
 const HOUSE_MANUAL = [
@@ -783,11 +964,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function renderMenu() {
   document.getElementById('main-menu-grid').innerHTML = MAIN_MENU.map(m => `
-    <div class="menu-tile" onclick="switchTab('${m.tab}')">
-      <div class="menu-tile-num">${m.num}</div>
-      <div class="menu-tile-name">${m.name.replace('\n','<br>')}</div>
+    <div class="menu-tile" onclick="switchTabColored('${m.tab}', '${m.color}', '${m.glow}')"
+      style="--tile-color:${m.color}; --tile-glow:${m.glow};
+             border-top: 1px solid ${m.color}40;
+             background: linear-gradient(160deg, ${m.glow} 0%, var(--surface) 60%);">
+      <div class="menu-tile-num" style="color:${m.color}; opacity:0.7">${m.num}</div>
+      <div class="menu-tile-name" style="color:${m.color}">${m.name}</div>
       <div class="menu-tile-sub">${m.sub}</div>
-      <div class="menu-tile-arrow">→</div>
+      <div class="menu-tile-arrow" style="color:${m.color}">→</div>
     </div>`).join('');
 }
 
@@ -883,12 +1067,48 @@ function renderInfo() {
 }
 
 function switchTab(tab) {
+  switchTabColored(tab, null, null);
+}
+
+function switchTabColored(tab, color, glow) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   const s = document.getElementById('screen-'+tab);
   if(s) s.classList.add('active');
   const t = document.querySelector(`[data-tab="${tab}"]`);
   if(t) t.classList.add('active');
+
+  // Apply color theme to screen header accent
+  const root = document.documentElement;
+  if(color) {
+    root.style.setProperty('--screen-accent', color);
+    root.style.setProperty('--screen-glow', glow);
+    // Update screen header rule and eyebrow color
+    document.querySelectorAll('.screen-header::after').forEach(el => {});
+    if(s) {
+      s.style.setProperty('--screen-accent', color);
+      // Color the screen eyebrow and rule
+      const eyebrow = s.querySelector('.screen-eyebrow');
+      const rule = s.querySelector('.screen-header-rule');
+      if(eyebrow) eyebrow.style.color = color;
+      if(rule) rule.style.background = color;
+      // Tint action buttons border-left
+      s.querySelectorAll('.action-btn').forEach(btn => {
+        btn.style.borderLeftColor = color;
+      });
+      s.querySelectorAll('.action-btn-mark').forEach(mark => {
+        mark.style.color = color;
+        mark.style.borderColor = color.replace('rgb','rgba').replace(')',',0.3)');
+      });
+      // Background tint
+      s.style.background = `radial-gradient(ellipse 100% 40% at 50% 0%, ${glow} 0%, transparent 60%)`;
+    }
+  } else {
+    // Home tab — reset
+    if(s) {
+      s.style.background = '';
+    }
+  }
 }
 
 function toggleLight(id) {
