@@ -574,6 +574,9 @@ body::before {
   #app {
     flex-direction: row;
     padding-top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
   }
 
   /* Vertical tab bar on left — deep navy */
@@ -607,66 +610,108 @@ body::before {
 
   .tab-brand {
     flex: 1;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding: 0 0 24px;
-    gap: 6px;
+    padding: 0 0 28px;
+    gap: 8px;
     cursor: pointer;
   }
   .tab-brand-title {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
+    writing-mode: vertical-lr;
     transform: rotate(180deg);
-    font-size: 9px; letter-spacing: 4px;
+    font-size: 9px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
     color: var(--sith2);
-    text-shadow: 0 0 8px rgba(224,32,32,0.4);
+    text-shadow: 0 0 10px rgba(224,32,32,0.5);
+    font-family: 'Cinzel', serif;
   }
   .tab-brand-sub {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
+    writing-mode: vertical-lr;
     transform: rotate(180deg);
-    font-size: 10px;
+    font-size: 9px;
+    font-style: italic;
     color: var(--ash);
     display: block;
+    font-family: 'EB Garamond', serif;
+    letter-spacing: 1px;
+    opacity: 0.7;
   }
 
-  /* All screens full width */
+  /* All screens fill remaining space after tab bar */
   .screen {
     flex: 1;
+    min-width: 0;
     padding-bottom: 0;
     overflow-y: auto;
-    display: none;
+    display: none !important;
   }
   .screen.active {
-    display: block;
+    display: block !important;
   }
   #screen-welcome {
-    height: 100vh;
-    height: 100dvh;
     overflow: hidden;
-    display: flex;
+    display: none !important;
     flex-direction: column;
   }
-  #screen-welcome.active { display: flex; }
+  #screen-welcome.active {
+    display: flex !important;
+  }
 
-  /* Welcome top */
+  /* Welcome — fills full height, no gaps */
+  #screen-welcome {
+    display: flex !important;
+    flex-direction: column;
+    height: 100%;
+  }
   #screen-welcome .welcome-top {
-    padding: 24px 36px 18px;
-    gap: 28px;
+    padding: 20px 36px 16px;
+    gap: 24px;
+    flex-shrink: 0;
   }
-  #screen-welcome .welcome-name { font-size: 38px; letter-spacing: 4px; }
-  #screen-welcome .welcome-greeting { font-size: 10px; }
+  #screen-welcome .welcome-greeting {
+    font-size: 13px;
+    letter-spacing: 7px;
+    margin-bottom: 10px;
+  }
+  #screen-welcome .welcome-name {
+    font-size: 52px;
+    letter-spacing: 4px;
+    line-height: 1.05;
+  }
   #screen-welcome .welcome-body {
-    padding: 16px 36px 0;
+    padding: 0;
     flex: 1;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
+    margin: 0;
   }
 
-  /* 3-col grid in landscape */
+  /* Menu grid fills remaining height */
   .menu-grid {
     grid-template-columns: repeat(3, 1fr);
     width: 100%;
+    flex: 1;
+    background: var(--border);
+    border-top: 1px solid var(--border);
   }
+  .menu-tile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 24px 24px;
+    gap: 10px;
+  }
+  .menu-tile-name { font-size: 17px; letter-spacing: 2.5px; }
+  .menu-tile-sub { font-size: 14px; }
+
+  /* QR bigger in landscape */
+  .welcome-qr { width: 108px; height: 108px; }
+  .welcome-top-right { gap: 16px; }
+  .welcome-wifi-val { font-size: 13px; }
 
   /* Screen headers */
   .screen-header { padding: 28px 40px 20px; }
