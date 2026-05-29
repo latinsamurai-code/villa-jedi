@@ -280,9 +280,15 @@ body::before {
 .media-list { padding:0 24px; }
 .media-row {
   display:flex; align-items:center; justify-content:space-between;
-  padding:18px 0; border-bottom:1px solid var(--border);
+  padding:14px 0; border-bottom:1px solid var(--border);
   cursor:pointer; text-decoration:none; color:inherit;
-  transition:opacity 0.15s; gap:16px;
+  transition:opacity 0.15s; gap:14px;
+}
+.media-row-img {
+  width:64px; height:64px; flex-shrink:0;
+  background-size:cover; background-position:center;
+  border-radius:2px;
+  border:1px solid rgba(255,255,255,0.06);
 }
 .media-row:active { opacity:0.5; }
 .media-row-body { flex:1; min-width:0; }
@@ -416,8 +422,8 @@ body::before {
 ════════════════════════════════ */
 #tabbar {
   height:var(--tab-h);
-  background:rgba(6,6,8,0.97);
-  border-top:1px solid var(--border);
+  background:#1a0505;
+  border-top:1px solid rgba(180,20,20,0.3);
   display:flex; align-items:center;
   flex-shrink:0; position:relative; z-index:50;
 }
@@ -430,10 +436,10 @@ body::before {
 }
 .tab::before {
   content:''; position:absolute; top:0; left:20%; right:20%; height:1px;
-  background:var(--cyan); opacity:0; transition:opacity 0.2s;
+  background:var(--sith2); opacity:0; transition:opacity 0.2s;
 }
-.tab.active { color:var(--cyan); }
-.tab.active::before { opacity:1; }
+.tab.active { color:var(--sith2); }
+.tab.active::before { opacity:1; background: var(--sith2); }
 .tab:active { opacity:0.5; }
 
 .tab-icon { width:20px; height:20px; display:flex; align-items:center; justify-content:center; }
@@ -530,12 +536,13 @@ body::before {
 .tab-brand-title {
   font-family:'Cinzel', serif;
   font-size:13px; font-weight:400; letter-spacing:5px;
-  color:var(--pale); text-transform:uppercase;
+  color:var(--sith2); text-transform:uppercase;
+  text-shadow: 0 0 12px rgba(224,32,32,0.4);
 }
 .tab-brand-sub {
   font-family:'EB Garamond', serif;
   font-size:13px; font-style:italic;
-  color:var(--ash);
+  color:rgba(200,180,180,0.6);
 }
 
 /* Screen header rule line */
@@ -569,18 +576,20 @@ body::before {
     padding-top: 0;
   }
 
-  /* Vertical tab bar on left */
+  /* Vertical tab bar on left — deep navy */
   #tabbar {
     flex-direction: column;
     width: 90px;
     height: 100vh;
     height: 100dvh;
     border-top: none;
-    border-right: 1px solid var(--border);
+    border-right: 1px solid rgba(180,20,20,0.35);
     padding: var(--safe-top) 0 var(--safe-bot);
     justify-content: flex-start;
     gap: 4px;
     order: -1;
+      background: linear-gradient(180deg, #1a0505 0%, #120202 100%);
+    box-shadow: inset -1px 0 20px rgba(180,20,20,0.08);
   }
 
   .tab {
@@ -590,30 +599,42 @@ body::before {
     flex-direction: column;
   }
   .tab::before {
-    top: auto; left: 0; right: auto;
+    top: 30%; bottom: auto; 
+    left: 0; right: auto;
     width: 2px; height: 40%;
-    bottom: auto; top: 30%;
+    border-radius: 0 2px 2px 0;
   }
 
   .tab-brand {
     flex: 1;
     align-items: center;
     justify-content: flex-end;
-    padding: 0 0 20px;
-    gap: 4px;
+    padding: 0 0 24px;
+    gap: 6px;
+    cursor: pointer;
   }
   .tab-brand-title {
     writing-mode: vertical-rl;
     text-orientation: mixed;
     transform: rotate(180deg);
-    font-size: 10px; letter-spacing: 4px;
+    font-size: 9px; letter-spacing: 4px;
+    color: var(--sith2);
+    text-shadow: 0 0 8px rgba(224,32,32,0.4);
   }
-  .tab-brand-sub { display: none; }
+  .tab-brand-sub {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 10px;
+    color: var(--ash);
+    display: block;
+  }
 
-  /* Screens take remaining width */
+  /* Screens take full remaining width */
   .screen {
     flex: 1;
     padding-bottom: 0;
+    padding-left: 0;
     overflow-y: auto;
   }
   #screen-welcome {
@@ -622,24 +643,17 @@ body::before {
     overflow: hidden;
   }
 
-  /* Welcome: greeting left, grid right */
+  /* Welcome top */
   #screen-welcome .welcome-top {
-    padding: 28px 32px 20px;
-    gap: 32px;
+    padding: 24px 36px 18px;
+    gap: 28px;
   }
   #screen-welcome .welcome-name { font-size: 38px; letter-spacing: 4px; }
   #screen-welcome .welcome-greeting { font-size: 10px; }
   #screen-welcome .welcome-body {
-    flex-direction: row;
-    padding: 0;
+    padding: 16px 36px 0;
     flex: 1;
     overflow: hidden;
-  }
-
-  /* Left panel: info/extra space */
-  #screen-welcome .welcome-body::before {
-    content: '';
-    width: 0;
   }
 
   /* 3-col grid in landscape */
@@ -1175,20 +1189,20 @@ const SERVICES = [
 ];
 
 const MUSIC = [
-  { label:"Villa Pick", title:"Bali Chill",          sub:"Daytime relaxation",     url:"https://open.spotify.com/playlist/37i9dQZF1DX4PP3DA4J0N8" },
-  { label:"Villa Pick", title:"Sunset Terrace",       sub:"Golden hour",            url:"https://open.spotify.com/playlist/37i9dQZF1DXdxTfd3LhFLB" },
-  { label:"Villa Pick", title:"Morning Breeze",       sub:"Gentle awakening",       url:"https://open.spotify.com/playlist/37i9dQZF1DX0SM0LYsmbMT" },
-  { label:"Villa Pick", title:"Deep by the Pool",     sub:"Afternoon energy",       url:"https://open.spotify.com/playlist/37i9dQZF1DX2TRYkJECvfC" },
-  { label:"Cultural",   title:"Balinese Gamelan",     sub:"Traditional ceremony",   url:"https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO" },
-  { label:"Villa Pick", title:"Jazz Dusk",            sub:"Slow evenings",          url:"https://open.spotify.com/playlist/37i9dQZF1DX0jgyAiPl8Af" },
+  { label:"Villa Pick", title:"Bali Chill",          sub:"Daytime relaxation",     url:"https://open.spotify.com/playlist/37i9dQZF1DX4PP3DA4J0N8", img:"https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&q=80" },
+  { label:"Villa Pick", title:"Sunset Terrace",       sub:"Golden hour",            url:"https://open.spotify.com/playlist/37i9dQZF1DXdxTfd3LhFLB", img:"https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=80" },
+  { label:"Villa Pick", title:"Morning Breeze",       sub:"Gentle awakening",       url:"https://open.spotify.com/playlist/37i9dQZF1DX0SM0LYsmbMT", img:"https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=400&q=80" },
+  { label:"Villa Pick", title:"Deep by the Pool",     sub:"Afternoon energy",       url:"https://open.spotify.com/playlist/37i9dQZF1DX2TRYkJECvfC", img:"https://images.unsplash.com/photo-1530251985675-fa6b479e5f27?w=400&q=80" },
+  { label:"Cultural",   title:"Balinese Gamelan",     sub:"Traditional ceremony",   url:"https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO", img:"https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=400&q=80" },
+  { label:"Villa Pick", title:"Jazz Dusk",            sub:"Slow evenings",          url:"https://open.spotify.com/playlist/37i9dQZF1DX0jgyAiPl8Af", img:"https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=400&q=80" },
 ];
 
 const MOVIES = [
-  { label:"Travel",       title:"Eat Pray Love",   sub:"2010 · Drama",      url:"https://www.netflix.com/search?q=eat+pray+love" },
-  { label:"Adventure",    title:"The Beach",        sub:"2000 · Thriller",   url:"https://www.netflix.com/search?q=the+beach" },
-  { label:"Documentary",  title:"Baraka",           sub:"1992 · Visual",     url:"https://www.youtube.com/results?search_query=baraka+1992" },
-  { label:"Journey",      title:"Wild",             sub:"2014 · Drama",      url:"https://www.netflix.com/search?q=wild+2014" },
-  { label:"Adventure",    title:"Into the Wild",    sub:"2007 · True Story", url:"https://www.netflix.com/search?q=into+the+wild" },
+  { label:"Travel",       title:"Eat Pray Love",   sub:"2010 · Drama",      url:"https://www.netflix.com/search?q=eat+pray+love",  img:"https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=400&q=80" },
+  { label:"Adventure",    title:"The Beach",        sub:"2000 · Thriller",   url:"https://www.netflix.com/search?q=the+beach",       img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80" },
+  { label:"Documentary",  title:"Baraka",           sub:"1992 · Visual",     url:"https://www.youtube.com/results?search_query=baraka+1992", img:"https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=400&q=80" },
+  { label:"Journey",      title:"Wild",             sub:"2014 · Drama",      url:"https://www.netflix.com/search?q=wild+2014",       img:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80" },
+  { label:"Adventure",    title:"Into the Wild",    sub:"2007 · True Story", url:"https://www.netflix.com/search?q=into+the+wild",   img:"https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80" },
 ];
 
 const LIGHTS = [
@@ -1362,6 +1376,7 @@ function renderServices() {
 function renderMusic() {
   document.getElementById('music-list').innerHTML = MUSIC.map(item => `
     <a class="media-row" href="${item.url}" onclick="openSpotifyItem(event, '${item.url}')">
+      ${item.img ? `<div class="media-row-img" style="background-image:url('${item.img}')"></div>` : ''}
       <div class="media-row-body">
         <div class="media-row-label">${item.label}</div>
         <div class="media-row-title">${item.title}</div>
@@ -1374,6 +1389,7 @@ function renderMusic() {
 function renderMovies() {
   document.getElementById('movie-list').innerHTML = MOVIES.map(item => `
     <a class="media-row" href="${item.url}" target="_blank">
+      ${item.img ? `<div class="media-row-img" style="background-image:url('${item.img}')"></div>` : ''}
       <div class="media-row-body">
         <div class="media-row-label">${item.label}</div>
         <div class="media-row-title">${item.title}</div>
