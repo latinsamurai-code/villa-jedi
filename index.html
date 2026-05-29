@@ -630,18 +630,24 @@ body::before {
     display: block;
   }
 
-  /* Screens take full remaining width */
+  /* All screens full width */
   .screen {
     flex: 1;
     padding-bottom: 0;
-    padding-left: 0;
     overflow-y: auto;
+    display: none;
+  }
+  .screen.active {
+    display: block;
   }
   #screen-welcome {
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
+  #screen-welcome.active { display: flex; }
 
   /* Welcome top */
   #screen-welcome .welcome-top {
@@ -1434,36 +1440,21 @@ function switchTabColored(tab, color, glow) {
   const t = document.querySelector(`[data-tab="${tab}"]`);
   if(t) t.classList.add('active');
 
-  // Apply color theme to screen header accent
-  const root = document.documentElement;
-  if(color) {
-    root.style.setProperty('--screen-accent', color);
-    root.style.setProperty('--screen-glow', glow);
-    // Update screen header rule and eyebrow color
-    document.querySelectorAll('.screen-header::after').forEach(el => {});
-    if(s) {
-      s.style.setProperty('--screen-accent', color);
-      // Color the screen eyebrow and rule
-      const eyebrow = s.querySelector('.screen-eyebrow');
-      const rule = s.querySelector('.screen-header-rule');
-      if(eyebrow) eyebrow.style.color = color;
-      if(rule) rule.style.background = color;
-      // Tint action buttons border-left
-      s.querySelectorAll('.action-btn').forEach(btn => {
-        btn.style.borderLeftColor = color;
-      });
-      s.querySelectorAll('.action-btn-mark').forEach(mark => {
-        mark.style.color = color;
-        mark.style.borderColor = color.replace('rgb','rgba').replace(')',',0.3)');
-      });
-      // Background tint
-      s.style.background = `radial-gradient(ellipse 100% 40% at 50% 0%, ${glow} 0%, transparent 60%)`;
-    }
-  } else {
-    // Home tab — reset
-    if(s) {
-      s.style.background = '';
-    }
+  if(color && s) {
+    s.style.setProperty('--screen-accent', color);
+    const eyebrow = s.querySelector('.screen-eyebrow');
+    const rule = s.querySelector('.screen-header-rule');
+    if(eyebrow) eyebrow.style.color = color;
+    if(rule) rule.style.background = color;
+    s.querySelectorAll('.action-btn').forEach(btn => {
+      btn.style.borderLeftColor = color;
+    });
+    s.querySelectorAll('.action-btn-mark').forEach(mark => {
+      mark.style.color = color;
+    });
+    s.style.background = `radial-gradient(ellipse 100% 40% at 50% 0%, ${glow} 0%, transparent 60%)`;
+  } else if(s) {
+    s.style.background = '';
   }
 }
 
