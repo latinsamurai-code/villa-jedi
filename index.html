@@ -591,8 +591,8 @@ body::before {
     justify-content: flex-start;
     gap: 4px;
     order: -1;
-      background: linear-gradient(180deg, #1a0505 0%, #120202 100%);
-    box-shadow: inset -1px 0 20px rgba(180,20,20,0.08);
+      background: linear-gradient(180deg, #2a0606 0%, #1e0404 100%);
+    box-shadow: inset -1px 0 24px rgba(220,20,20,0.15);
   }
 
   .tab {
@@ -640,21 +640,29 @@ body::before {
     opacity: 0.7;
   }
 
-  /* All screens fill remaining space after tab bar */
+  /* All screens fill remaining space */
   .screen {
     flex: 1;
     min-width: 0;
+    width: 100%;
     padding-bottom: 0;
     overflow-y: auto;
     display: none !important;
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    left: 90px;
   }
   .screen.active {
     display: block !important;
+    position: relative;
+    left: auto;
   }
   #screen-welcome {
     overflow: hidden;
     display: none !important;
     flex-direction: column;
+    position: relative;
+    left: auto;
   }
   #screen-welcome.active {
     display: flex !important;
@@ -1192,12 +1200,12 @@ const CONFIG = {
 };
 
 const MAIN_MENU = [
-  { num:"01", name:"Concierge",      sub:"Contact our staff",           tab:"concierge",     color:"#4FC3C8", glow:"rgba(79,195,200,0.12)"  },
-  { num:"02", name:"Dining",         sub:"Food & drinks, day or night", tab:"food",          color:"#E8803A", glow:"rgba(232,128,58,0.12)"  },
-  { num:"03", name:"Transportation", sub:"Drivers & getting around",    tab:"transport",     color:"#7EC8A0", glow:"rgba(126,200,160,0.12)" },
-  { num:"04", name:"Entertainment",  sub:"Music, movies & lights",      tab:"entertainment", color:"#A07EC8", glow:"rgba(160,126,200,0.12)" },
-  { num:"05", name:"Services",       sub:"Curated extras & experiences",tab:"services",      color:"#C8A03A", glow:"rgba(200,160,58,0.12)"  },
-  { num:"06", name:"More",           sub:"Villa info & house manual",   tab:"more",          color:"#C87EA0", glow:"rgba(200,126,160,0.12)" },
+  { num:"01", name:"Concierge",      sub:"Contact our staff",           tab:"concierge",     color:"#C8923A", glow:"rgba(200,146,58,0.10)"  },
+  { num:"02", name:"Dining",         sub:"Food & drinks, day or night", tab:"food",          color:"#C85A3A", glow:"rgba(200,90,58,0.10)"   },
+  { num:"03", name:"Transportation", sub:"Drivers & getting around",    tab:"transport",     color:"#A0785A", glow:"rgba(160,120,90,0.10)"  },
+  { num:"04", name:"Entertainment",  sub:"Music, movies & lights",      tab:"entertainment", color:"#C8A878", glow:"rgba(200,168,120,0.10)" },
+  { num:"05", name:"Services",       sub:"Curated extras & experiences",tab:"services",      color:"#B8784A", glow:"rgba(184,120,74,0.10)"  },
+  { num:"06", name:"More",           sub:"Villa info & house manual",   tab:"more",          color:"#987060", glow:"rgba(152,112,96,0.10)"  },
 ];
 
 const HOUSE_MANUAL = [
@@ -1371,7 +1379,7 @@ function renderMenu() {
       style="--tile-color:${m.color}; --tile-glow:${m.glow};
              border-top: 1px solid ${m.color}40;
              background: linear-gradient(160deg, ${m.glow} 0%, var(--surface) 60%);">
-      <div class="menu-tile-num" style="color:${m.color}; opacity:0.7">${m.num}</div>
+
       <div class="menu-tile-name" style="color:${m.color}">${m.name}</div>
       <div class="menu-tile-sub">${m.sub}</div>
       <div class="menu-tile-arrow" style="color:${m.color}">→</div>
