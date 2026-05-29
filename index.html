@@ -65,7 +65,7 @@ body::before {
 }
 .screen-header::after {
   content:''; position:absolute; bottom:-1px; left:24px; width:32px; height:1px;
-  background:var(--cyan);
+  background:var(--amber);
 }
 .screen-eyebrow {
   font-family:'Cinzel', serif;
@@ -98,7 +98,7 @@ body::before {
 .menu-tile {
   background:var(--surface);
   border:1px solid rgba(255,255,255,0.08);
-  border-top:1px solid rgba(79,195,200,0.2);
+  border-top:1px solid rgba(200,146,58,0.15);
   border-radius:2px;
   padding:16px 16px 14px;
   cursor:pointer;
@@ -109,12 +109,12 @@ body::before {
 }
 .menu-tile::before {
   content:''; position:absolute; top:0; left:0; right:0; height:1px;
-  background:linear-gradient(90deg, var(--cyan), var(--amber), transparent);
+  background:linear-gradient(90deg, var(--amber), transparent);
   opacity:0; transition:opacity 0.2s;
 }
 .menu-tile::after {
   content:''; position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(ellipse 80% 60% at 0% 100%, rgba(79,195,200,0.04), transparent);
+  background:radial-gradient(ellipse 80% 60% at 0% 100%, rgba(200,146,58,0.04), transparent);
 }
 .menu-tile:active {
   background:var(--lift);
@@ -130,7 +130,7 @@ body::before {
 .menu-tile-name {
   font-family:'Cinzel', serif;
   font-size:14px; font-weight:400; letter-spacing:2px; text-transform:uppercase;
-  color:var(--white); line-height:1.2;
+  color:var(--amber2); line-height:1.2;
 }
 .menu-tile-sub {
   font-family:'EB Garamond', serif;
@@ -138,7 +138,7 @@ body::before {
 }
 .menu-tile-arrow {
   font-family:monospace; font-size:16px;
-  color:var(--cyan); opacity:0.7; margin-top:4px;
+  color:var(--amber); opacity:0.5; margin-top:4px;
 }
 
 /* ════════════════════════════════
@@ -547,7 +547,7 @@ body::before {
 
 /* Screen header rule line */
 .screen-header-rule {
-  width:32px; height:1px; background:var(--cyan); margin-bottom:12px;
+  width:28px; height:1px; background:var(--amber); margin-bottom:12px;
 }
 
 /* ════════════════════════════════
@@ -577,6 +577,13 @@ body::before {
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
+  }
+  #screens-container {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
   }
 
   /* Vertical tab bar on left — deep navy */
@@ -614,8 +621,8 @@ body::before {
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding: 0 0 28px;
-    gap: 8px;
+    padding: 0 0 36px;
+    gap: 0;
     cursor: pointer;
   }
   .tab-brand-title {
@@ -631,46 +638,47 @@ body::before {
   .tab-brand-sub {
     writing-mode: vertical-lr;
     transform: rotate(180deg);
-    font-size: 9px;
+    font-size: 10px;
     font-style: italic;
     color: var(--ash);
     display: block;
     font-family: 'EB Garamond', serif;
-    letter-spacing: 1px;
-    opacity: 0.7;
+    letter-spacing: 2px;
+    opacity: 0.6;
+    margin-top: 24px;
+  }
+  .tab-brand-title {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    font-size: 9px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--sith2);
+    text-shadow: 0 0 10px rgba(240,48,48,0.5);
+    font-family: 'Cinzel', serif;
+    margin-bottom: 4px;
   }
 
-  /* All screens fill remaining space */
-  .screen {
-    flex: 1;
-    min-width: 0;
+  /* All screens fill the container */
+  #screens-container {
+    position: relative;
+  }
+  #screens-container .screen {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
     width: 100%;
+    height: 100%;
     padding-bottom: 0;
     overflow-y: auto;
-    display: none !important;
-    position: absolute;
-    top: 0; right: 0; bottom: 0;
-    left: 90px;
+    display: none;
   }
-  .screen.active {
-    display: block !important;
-    position: relative;
-    left: auto;
-  }
-  #screen-welcome {
-    overflow: hidden;
-    display: none !important;
+  #screens-container #screen-welcome {
     flex-direction: column;
-    position: relative;
-    left: auto;
-  }
-  #screen-welcome.active {
-    display: flex !important;
+    overflow: hidden;
   }
 
   /* Welcome — fills full height, no gaps */
   #screen-welcome {
-    display: flex !important;
     flex-direction: column;
     height: 100%;
   }
@@ -930,6 +938,8 @@ body::before {
 <body>
 <div id="app">
 
+<div id="screens-container">
+
 <!-- WELCOME -->
 <div class="screen active" id="screen-welcome">
   <div class="welcome-top">
@@ -1160,6 +1170,8 @@ body::before {
   </div>
 </div>
 
+</div><!-- /#screens-container -->
+
 <!-- DETAIL PANEL -->
 <div id="detail-panel">
   <div class="detail-nav" onclick="closeDetail()">
@@ -1200,12 +1212,12 @@ const CONFIG = {
 };
 
 const MAIN_MENU = [
-  { num:"01", name:"Concierge",      sub:"Contact our staff",           tab:"concierge",     color:"#C8923A", glow:"rgba(200,146,58,0.10)"  },
-  { num:"02", name:"Dining",         sub:"Food & drinks, day or night", tab:"food",          color:"#C85A3A", glow:"rgba(200,90,58,0.10)"   },
-  { num:"03", name:"Transportation", sub:"Drivers & getting around",    tab:"transport",     color:"#A0785A", glow:"rgba(160,120,90,0.10)"  },
-  { num:"04", name:"Entertainment",  sub:"Music, movies & lights",      tab:"entertainment", color:"#C8A878", glow:"rgba(200,168,120,0.10)" },
-  { num:"05", name:"Services",       sub:"Curated extras & experiences",tab:"services",      color:"#B8784A", glow:"rgba(184,120,74,0.10)"  },
-  { num:"06", name:"More",           sub:"Villa info & house manual",   tab:"more",          color:"#987060", glow:"rgba(152,112,96,0.10)"  },
+  { name:"Concierge",      sub:"Contact our staff",           tab:"concierge"     },
+  { name:"Dining",         sub:"Food & drinks, day or night", tab:"food"          },
+  { name:"Transportation", sub:"Drivers & getting around",    tab:"transport"     },
+  { name:"Entertainment",  sub:"Music, movies & lights",      tab:"entertainment" },
+  { name:"Services",       sub:"Curated extras & experiences",tab:"services"      },
+  { name:"More",           sub:"Villa info & house manual",   tab:"more"          },
 ];
 
 const HOUSE_MANUAL = [
@@ -1237,7 +1249,7 @@ const MENU_ITEMS = [
 ];
 
 const SERVICES = [
-  { cat:"Experience", name:"Bonfire",           desc:"Firewood, setup, s'mores by the pool",  usd:25, idr:400000, img:"https://images.unsplash.com/photo-1516726817505-978572728572?w=400&q=80" },
+  { cat:"Experience", name:"Bonfire",           desc:"Firewood, setup, s'mores by the pool",  usd:25, idr:400000, img:"https://images.unsplash.com/photo-1510672981848-a1c4f1cb5ccf?w=400&q=80" },
   { cat:"Experience", name:"Drone Session",     desc:"30-min aerial photography, edited",     usd:50, idr:800000, img:"https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&q=80" },
   { cat:"Experience", name:"Sunset Cruise",     desc:"2-hour boat, open bar",                 usd:60, idr:960000, img:"https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=400&q=80" },
   { cat:"Wellness",   name:"Balinese Massage",  desc:"60-min in-villa treatment",             usd:45, idr:720000, img:"https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&q=80" },
@@ -1294,6 +1306,14 @@ document.addEventListener('DOMContentLoaded', () => {
   renderServices(); renderMusic(); renderMovies();
   renderLights(); renderInfo();
   renderQR();
+
+  // Always init by showing welcome
+  switchTabColored('welcome', null, null);
+
+  // Re-init on orientation change
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => { switchTabColored('welcome', null, null); }, 200);
+  });
 });
 
 function renderQR() {
@@ -1486,29 +1506,22 @@ function switchTab(tab) {
 }
 
 function switchTabColored(tab, color, glow) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  // Hide all screens
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  const s = document.getElementById('screen-'+tab);
-  if(s) s.classList.add('active');
-  const t = document.querySelector(`[data-tab="${tab}"]`);
-  if(t) t.classList.add('active');
 
-  if(color && s) {
-    s.style.setProperty('--screen-accent', color);
-    const eyebrow = s.querySelector('.screen-eyebrow');
-    const rule = s.querySelector('.screen-header-rule');
-    if(eyebrow) eyebrow.style.color = color;
-    if(rule) rule.style.background = color;
-    s.querySelectorAll('.action-btn').forEach(btn => {
-      btn.style.borderLeftColor = color;
-    });
-    s.querySelectorAll('.action-btn-mark').forEach(mark => {
-      mark.style.color = color;
-    });
-    s.style.background = `radial-gradient(ellipse 100% 40% at 50% 0%, ${glow} 0%, transparent 60%)`;
-  } else if(s) {
-    s.style.background = '';
+  // Show target screen
+  const s = document.getElementById('screen-' + tab);
+  if (s) {
+    s.classList.add('active');
+    s.style.display = (tab === 'welcome') ? 'flex' : 'block';
   }
+
+  const t = document.querySelector('[data-tab="' + tab + '"]');
+  if (t) t.classList.add('active');
 }
 
 function toggleLight(id) {
