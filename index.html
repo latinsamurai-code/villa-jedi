@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="screen-orientation" content="landscape">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="VILLA JEDI">
@@ -80,8 +81,16 @@ body::before {
 /* ════════════════════════════════
    WELCOME BODY
 ════════════════════════════════ */
-#screen-welcome { padding-bottom:calc(var(--tab-h) + 24px); }
-.welcome-body { padding:24px 24px 0; }
+#screen-welcome { 
+  padding-bottom:0; 
+  height:calc(100vh - var(--tab-h) - var(--safe-top) - var(--safe-bot));
+  height:calc(100dvh - var(--tab-h) - var(--safe-top) - var(--safe-bot));
+  display:flex; flex-direction:column; overflow:hidden;
+}
+#screen-welcome .welcome-body { flex:1; display:flex; flex-direction:column; }
+#screen-welcome .menu-grid { flex:1; }
+#screen-welcome .menu-tile { flex:1; }
+.welcome-body { padding:16px 24px 0; }
 
 /* ── Menu Grid ── */
 .menu-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
@@ -91,10 +100,10 @@ body::before {
   border:1px solid rgba(255,255,255,0.08);
   border-top:1px solid rgba(79,195,200,0.2);
   border-radius:2px;
-  padding:22px 18px 20px;
+  padding:16px 16px 14px;
   cursor:pointer;
   transition:all 0.2s ease;
-  display:flex; flex-direction:column; gap:10px;
+  display:flex; flex-direction:column; gap:6px;
   position:relative; overflow:hidden;
   -webkit-user-select:none;
 }
@@ -120,12 +129,12 @@ body::before {
 }
 .menu-tile-name {
   font-family:'Cinzel', serif;
-  font-size:16px; font-weight:400; letter-spacing:2px; text-transform:uppercase;
-  color:var(--white); line-height:1.3;
+  font-size:14px; font-weight:400; letter-spacing:2px; text-transform:uppercase;
+  color:var(--white); line-height:1.2;
 }
 .menu-tile-sub {
   font-family:'EB Garamond', serif;
-  font-size:14px; font-style:italic; color:var(--ash);
+  font-size:13px; font-style:italic; color:var(--ash);
 }
 .menu-tile-arrow {
   font-family:monospace; font-size:16px;
@@ -168,10 +177,21 @@ body::before {
 ════════════════════════════════ */
 .items-list { padding:0 24px; }
 .item-row {
-  display:flex; align-items:flex-start; justify-content:space-between;
-  padding:20px 0; border-bottom:1px solid var(--border);
-  cursor:pointer; transition:opacity 0.15s; gap:16px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 0; border-bottom:1px solid var(--border);
+  cursor:pointer; transition:opacity 0.15s; gap:14px;
   position:relative;
+}
+.item-row-img {
+  width:72px; height:72px; flex-shrink:0;
+  background-size:cover; background-position:center;
+  border-radius:2px;
+  border:1px solid rgba(255,255,255,0.06);
+}
+.detail-img {
+  width:100%; height:220px;
+  background-size:cover; background-position:center;
+  border-radius:2px; margin-bottom:24px;
 }
 .item-row::after {
   content:''; position:absolute; left:0; bottom:0; width:0; height:1px;
@@ -440,7 +460,7 @@ body::before {
    WELCOME TOP — Big greeting
 ════════════════════════════════ */
 .welcome-top {
-  padding: 48px 24px 28px;
+  padding: 20px 24px 16px;
   border-bottom: 1px solid var(--border);
   position: relative;
   display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
@@ -452,12 +472,12 @@ body::before {
 .welcome-top-left { flex:1; min-width:0; }
 .welcome-greeting {
   font-family:'Cinzel', serif;
-  font-size:10px; letter-spacing:6px; text-transform:uppercase;
-  color:var(--cyan); opacity:0.8; margin-bottom:12px;
+  font-size:9px; letter-spacing:5px; text-transform:uppercase;
+  color:var(--cyan); opacity:0.8; margin-bottom:8px;
 }
 .welcome-name {
   font-family:'Cinzel', serif;
-  font-size:36px; font-weight:300; letter-spacing:4px;
+  font-size:28px; font-weight:300; letter-spacing:3px;
   color:var(--white); line-height:1.2;
 }
 .welcome-top-right {
@@ -466,7 +486,7 @@ body::before {
 }
 .welcome-qr-wrap { display:flex; flex-direction:column; align-items:center; gap:6px; }
 .welcome-qr {
-  width: 90px; height: 90px;
+  width: 72px; height: 72px;
   border: none;
   border-radius: 4px; overflow: hidden;
   background: white;
@@ -474,8 +494,8 @@ body::before {
 }
 .welcome-qr-label {
   font-family:'Cinzel', serif;
-  font-size:7px; letter-spacing:1.5px; text-transform:uppercase;
-  color:var(--ash); text-align:center; max-width:90px; line-height:1.4;
+  font-size:6px; letter-spacing:1px; text-transform:uppercase;
+  color:var(--ash); text-align:center; max-width:72px; line-height:1.4;
 }
 .welcome-wifi {
   display:flex; flex-direction:column; gap:6px; align-items:flex-end;
@@ -485,11 +505,11 @@ body::before {
 }
 .welcome-wifi-label {
   font-family:'Cinzel', serif;
-  font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--ash);
+  font-size:7px; letter-spacing:2px; text-transform:uppercase; color:var(--ash);
 }
 .welcome-wifi-val {
   font-family:'Cinzel', serif;
-  font-size:12px; letter-spacing:1px; color:var(--cyan);
+  font-size:11px; letter-spacing:1px; color:var(--cyan);
 }
 .welcome-wifi-reveal {
   font-family:'Cinzel', serif;
@@ -524,19 +544,188 @@ body::before {
 }
 
 /* ════════════════════════════════
-   iPAD OPTIMISATION
+   iPAD LANDSCAPE OPTIMISATION
 ════════════════════════════════ */
 
-/* Safe area + larger tap targets */
+/* Safe area */
 #app {
   padding-top: var(--safe-top);
 }
+
+/* Default (portrait/small): bottom tab bar */
 #tabbar {
   padding-bottom: var(--safe-bot);
   height: calc(var(--tab-h) + var(--safe-bot));
+  flex-direction: row;
 }
 .screen {
   padding-bottom: calc(var(--tab-h) + var(--safe-bot) + 32px);
+}
+
+/* ── Landscape iPad ── */
+@media (orientation: landscape) and (min-width: 768px) {
+  #app {
+    flex-direction: row;
+    padding-top: 0;
+  }
+
+  /* Vertical tab bar on left */
+  #tabbar {
+    flex-direction: column;
+    width: 90px;
+    height: 100vh;
+    height: 100dvh;
+    border-top: none;
+    border-right: 1px solid var(--border);
+    padding: var(--safe-top) 0 var(--safe-bot);
+    justify-content: flex-start;
+    gap: 4px;
+    order: -1;
+  }
+
+  .tab {
+    width: 100%;
+    padding: 16px 8px;
+    border-radius: 0;
+    flex-direction: column;
+  }
+  .tab::before {
+    top: auto; left: 0; right: auto;
+    width: 2px; height: 40%;
+    bottom: auto; top: 30%;
+  }
+
+  .tab-brand {
+    flex: 1;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 0 20px;
+    gap: 4px;
+  }
+  .tab-brand-title {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 10px; letter-spacing: 4px;
+  }
+  .tab-brand-sub { display: none; }
+
+  /* Screens take remaining width */
+  .screen {
+    flex: 1;
+    padding-bottom: 0;
+    overflow-y: auto;
+  }
+  #screen-welcome {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* Welcome: greeting left, grid right */
+  #screen-welcome .welcome-top {
+    padding: 28px 32px 20px;
+    gap: 32px;
+  }
+  #screen-welcome .welcome-name { font-size: 38px; letter-spacing: 4px; }
+  #screen-welcome .welcome-greeting { font-size: 10px; }
+  #screen-welcome .welcome-body {
+    flex-direction: row;
+    padding: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Left panel: info/extra space */
+  #screen-welcome .welcome-body::before {
+    content: '';
+    width: 0;
+  }
+
+  /* 3-col grid in landscape */
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+  }
+
+  /* Screen headers */
+  .screen-header { padding: 28px 40px 20px; }
+  .screen-title { font-size: 30px; }
+
+  /* Content areas */
+  .manual-body,
+  .items-list,
+  .media-list,
+  .lights-body,
+  .info-body { padding: 0 40px; }
+  .concierge-body { padding: 24px 40px 0; }
+
+  /* Food/Services 3-col in landscape */
+  .items-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0 40px;
+  }
+  .item-row { padding: 16px 16px 16px 0; border-left: none; }
+  .item-row:nth-child(3n+2) { padding: 16px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+  .item-row:nth-child(3n) { padding: 16px 0 16px 16px; }
+  .item-row-img { width: 80px; height: 80px; }
+
+  /* Media 3-col */
+  .media-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0 40px;
+  }
+  .media-row { padding: 18px 16px 18px 0; }
+  .media-row:nth-child(3n+2) { padding: 18px 16px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+  .media-row:nth-child(3n) { padding: 18px 0 18px 16px; }
+
+  /* Lights 2-col */
+  .lights-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 0 40px;
+  }
+  .light-row { padding: 20px 20px 20px 0; }
+  .light-row:nth-child(even) {
+    padding: 20px 0 20px 20px;
+    border-left: 1px solid var(--border);
+  }
+
+  /* Concierge 2-col actions */
+  .concierge-body .action-btn { margin-bottom: 10px; }
+
+  /* Bigger toggle in landscape */
+  .toggle-track { width: 58px; height: 30px; }
+  .toggle-knob { width: 22px; height: 22px; }
+  .toggle-track.on .toggle-knob { left: 29px; }
+
+  /* Detail panel */
+  .detail-content { padding: 40px 48px 60px; max-width: 700px; }
+  .detail-img { height: 240px; }
+  .detail-title { font-size: 30px; }
+
+  /* Info grid 3-col */
+  .info-body {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    padding: 0 40px;
+  }
+  .info-row { padding: 20px 16px; border-right: 1px solid var(--border); border-bottom: none; }
+  .info-row:nth-child(3n) { border-right: none; }
+
+  /* Toast above left bar */
+  #toast {
+    bottom: 20px;
+    left: calc(90px + 50%);
+  }
+
+  /* Welcome QR bigger */
+  .welcome-qr { width: 100px; height: 100px; }
+  .welcome-wifi-val { font-size: 13px; }
 }
 
 /* iPad: 2-column layout for action buttons on wider screens */
@@ -547,14 +736,17 @@ body::before {
 
   .welcome-body { padding: 32px 40px 0; }
   .guest-card { padding: 22px 28px; margin-bottom: 32px; }
-  .welcome-name { font-size: 48px; letter-spacing: 5px; }
-  .welcome-greeting { font-size: 12px; letter-spacing: 7px; }
-  .welcome-top { padding: 56px 40px 36px; gap: 32px; }
-  .welcome-qr { width: 120px; height: 120px; }
+  .welcome-name { font-size: 44px; letter-spacing: 4px; }
+  .welcome-greeting { font-size: 11px; letter-spacing: 6px; }
+  .welcome-top { padding: 32px 40px 24px; gap: 32px; }
+  .welcome-body { padding: 20px 40px 0; }
+  .welcome-qr { width: 110px; height: 110px; }
   .welcome-wifi-val { font-size: 14px; }
   .welcome-wifi-label { font-size: 9px; }
-  .welcome-wifi-reveal { font-size: 9px; }
-  .welcome-qr-label { font-size: 8px; max-width: 120px; }
+  .welcome-qr-label { font-size: 8px; max-width: 110px; }
+  .menu-tile { padding: 22px 20px 18px; gap: 10px; }
+  .menu-tile-name { font-size: 17px; }
+  .menu-tile-sub { font-size: 14px; }
   .tab-brand-title { font-size: 15px; letter-spacing: 6px; }
   .tab-brand-sub { font-size: 14px; }
 
@@ -762,7 +954,7 @@ body::before {
   </div>
   <div class="media-list" id="music-list"></div>
   <div style="padding:0 28px; margin-top:8px;">
-    <a class="action-btn" href="https://open.spotify.com" target="_blank">
+    <a class="action-btn" href="spotify://" onclick="setTimeout(()=>{window.location='https://apps.apple.com/app/spotify/id324684580'},500)">
       <div class="action-btn-body">
         <div class="action-btn-title">Open Spotify</div>
         <div class="action-btn-sub">Your own playlists</div>
@@ -781,7 +973,7 @@ body::before {
   </div>
   <div class="media-list" id="movie-list"></div>
   <div style="padding:0 28px; margin-top:8px;">
-    <a class="action-btn" href="https://netflix.com" target="_blank">
+    <a class="action-btn" href="nflx://" onclick="setTimeout(()=>{window.location='https://apps.apple.com/app/netflix/id363590051'},500)">
       <div class="action-btn-body">
         <div class="action-btn-title">Open Netflix</div>
         <div class="action-btn-sub">Your own account</div>
@@ -957,29 +1149,29 @@ const HOUSE_MANUAL = [
 ];
 
 const MENU_ITEMS = [
-  { cat:"Breakfast", name:"Nasi Goreng",        desc:"Fried rice, egg, chicken, vegetables",  usd:8,  idr:130000 },
-  { cat:"Breakfast", name:"Eggs Benedict",      desc:"Poached eggs, hollandaise, brioche",    usd:10, idr:160000 },
-  { cat:"Breakfast", name:"Tropical Fruit Bowl",desc:"Fresh local fruits, coconut yoghurt",   usd:7,  idr:112000 },
-  { cat:"Breakfast", name:"Pancakes",           desc:"Buttermilk, maple syrup, fresh berries",usd:8,  idr:128000 },
-  { cat:"Main",      name:"Mie Goreng",         desc:"Fried noodles, tofu, seasonal vegetables",usd:8,idr:130000 },
-  { cat:"Main",      name:"Grilled Fish",       desc:"Catch of the day, steamed rice, sambal", usd:15,idr:240000 },
-  { cat:"Main",      name:"Club Sandwich",      desc:"Triple-decker, fries, house pickle",    usd:12, idr:192000 },
-  { cat:"Snack",     name:"Spring Rolls",       desc:"Crispy vegetables, tamarind dip",       usd:6,  idr:96000  },
-  { cat:"Drinks",    name:"Young Coconut",      desc:"Straight from the garden",              usd:4,  idr:64000  },
-  { cat:"Drinks",    name:"Bali Coffee",        desc:"Local arabica, hot or iced",            usd:4,  idr:64000  },
-  { cat:"Drinks",    name:"Fresh Juice",        desc:"Watermelon, mango, or pineapple",       usd:5,  idr:80000  },
-  { cat:"Drinks",    name:"Bintang",            desc:"Indonesian lager, 330ml",               usd:5,  idr:80000  },
+  { cat:"Breakfast", name:"Nasi Goreng",        desc:"Fried rice, egg, chicken, vegetables",  usd:8,  idr:130000, img:"https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&q=80" },
+  { cat:"Breakfast", name:"Eggs Benedict",      desc:"Poached eggs, hollandaise, brioche",    usd:10, idr:160000, img:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80" },
+  { cat:"Breakfast", name:"Tropical Fruit Bowl",desc:"Fresh local fruits, coconut yoghurt",   usd:7,  idr:112000, img:"https://images.unsplash.com/photo-1511688878353-3a2f5be94cd7?w=400&q=80" },
+  { cat:"Breakfast", name:"Pancakes",           desc:"Buttermilk, maple syrup, fresh berries",usd:8,  idr:128000, img:"https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&q=80" },
+  { cat:"Main",      name:"Mie Goreng",         desc:"Fried noodles, tofu, seasonal vegetables",usd:8,idr:130000, img:"https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80" },
+  { cat:"Main",      name:"Grilled Fish",       desc:"Catch of the day, steamed rice, sambal", usd:15,idr:240000, img:"https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80" },
+  { cat:"Main",      name:"Club Sandwich",      desc:"Triple-decker, fries, house pickle",    usd:12, idr:192000, img:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&q=80" },
+  { cat:"Snack",     name:"Spring Rolls",       desc:"Crispy vegetables, tamarind dip",       usd:6,  idr:96000,  img:"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&q=80" },
+  { cat:"Drinks",    name:"Young Coconut",      desc:"Straight from the garden",              usd:4,  idr:64000,  img:"https://images.unsplash.com/photo-1559181567-c3190ca9be46?w=400&q=80" },
+  { cat:"Drinks",    name:"Bali Coffee",        desc:"Local arabica, hot or iced",            usd:4,  idr:64000,  img:"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80" },
+  { cat:"Drinks",    name:"Fresh Juice",        desc:"Watermelon, mango, or pineapple",       usd:5,  idr:80000,  img:"https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&q=80" },
+  { cat:"Drinks",    name:"Bintang",            desc:"Indonesian lager, 330ml",               usd:5,  idr:80000,  img:"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&q=80" },
 ];
 
 const SERVICES = [
-  { cat:"Experience", name:"Bonfire",           desc:"Firewood, setup, s'mores by the pool",  usd:25, idr:400000 },
-  { cat:"Experience", name:"Drone Session",     desc:"30-min aerial photography, edited",     usd:50, idr:800000 },
-  { cat:"Experience", name:"Sunset Cruise",     desc:"2-hour boat, open bar",                 usd:60, idr:960000 },
-  { cat:"Wellness",   name:"Balinese Massage",  desc:"60-min in-villa treatment",             usd:45, idr:720000 },
-  { cat:"Wellness",   name:"Private Yoga",      desc:"60-min session, personal instructor",   usd:40, idr:640000 },
-  { cat:"Keepsake",   name:"Yukata",            desc:"Traditional Japanese cotton robe",      usd:35, idr:560000 },
-  { cat:"Practical",  name:"Laundry",           desc:"Wash, press, fold — same day",          usd:10, idr:160000 },
-  { cat:"Practical",  name:"Airport Transfer",  desc:"Private car, Ngurah Rai Airport",       usd:30, idr:480000 },
+  { cat:"Experience", name:"Bonfire",           desc:"Firewood, setup, s'mores by the pool",  usd:25, idr:400000, img:"https://images.unsplash.com/photo-1516726817505-978572728572?w=400&q=80" },
+  { cat:"Experience", name:"Drone Session",     desc:"30-min aerial photography, edited",     usd:50, idr:800000, img:"https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&q=80" },
+  { cat:"Experience", name:"Sunset Cruise",     desc:"2-hour boat, open bar",                 usd:60, idr:960000, img:"https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=400&q=80" },
+  { cat:"Wellness",   name:"Balinese Massage",  desc:"60-min in-villa treatment",             usd:45, idr:720000, img:"https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&q=80" },
+  { cat:"Wellness",   name:"Private Yoga",      desc:"60-min session, personal instructor",   usd:40, idr:640000, img:"https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&q=80" },
+  { cat:"Keepsake",   name:"Yukata",            desc:"Traditional Japanese cotton robe",      usd:35, idr:560000, img:"https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&q=80" },
+  { cat:"Practical",  name:"Laundry",           desc:"Wash, press, fold — same day",          usd:10, idr:160000, img:"https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=400&q=80" },
+  { cat:"Practical",  name:"Airport Transfer",  desc:"Private car, Ngurah Rai Airport",       usd:30, idr:480000, img:"https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&q=80" },
 ];
 
 const MUSIC = [
@@ -1138,6 +1330,7 @@ function renderManual() {
 function renderFood() {
   document.getElementById('food-list').innerHTML = MENU_ITEMS.map(item => `
     <div class="item-row" onclick="showDetail('food',${esc(item)})">
+      ${item.img ? `<div class="item-row-img" style="background-image:url('${item.img}')"></div>` : ''}
       <div style="flex:1;min-width:0;">
         <div class="item-row-cat">${item.cat}</div>
         <div class="item-row-name">${item.name}</div>
@@ -1153,6 +1346,7 @@ function renderFood() {
 function renderServices() {
   document.getElementById('services-list').innerHTML = SERVICES.map(item => `
     <div class="item-row" onclick="showDetail('service',${esc(item)})">
+      ${item.img ? `<div class="item-row-img" style="background-image:url('${item.img}')"></div>` : ''}
       <div style="flex:1;min-width:0;">
         <div class="item-row-cat">${item.cat}</div>
         <div class="item-row-name">${item.name}</div>
@@ -1167,7 +1361,7 @@ function renderServices() {
 
 function renderMusic() {
   document.getElementById('music-list').innerHTML = MUSIC.map(item => `
-    <a class="media-row" href="${item.url}" target="_blank">
+    <a class="media-row" href="${item.url}" onclick="openSpotifyItem(event, '${item.url}')">
       <div class="media-row-body">
         <div class="media-row-label">${item.label}</div>
         <div class="media-row-title">${item.title}</div>
@@ -1270,6 +1464,7 @@ function showDetail(type, item) {
     ? `I would like to order: ${item.name} × 1`
     : `I would like to request: ${item.name}`;
   document.getElementById('detail-body').innerHTML = `
+    ${item.img ? `<div class="detail-img" style="background-image:url('${item.img}')"></div>` : ''}
     <div class="detail-eyebrow">${item.cat}</div>
     <div class="detail-title">${item.name}</div>
     <div class="detail-rule"></div>
@@ -1286,9 +1481,29 @@ function showDetail(type, item) {
 
 function closeDetail() { document.getElementById('detail-panel').classList.remove('open'); }
 function orderViaWA(msg) { window.open(`https://wa.me/${CONFIG.conciergeWA.replace(/\D/g,'')}?text=${msg}`,'_blank'); }
-function openWhatsApp(t) { window.open(`https://wa.me/${CONFIG.conciergeWA.replace(/\D/g,'')}`,'_blank'); }
-function openGrab() { window.open('https://grab.com','_blank'); }
+function openWhatsApp(t) {
+  const num = CONFIG.conciergeWA.replace(/\D/g,'');
+  window.location = `whatsapp://send?phone=${num}`;
+  setTimeout(() => { window.location = `https://wa.me/${num}`; }, 500);
+}
+function openGrab() { 
+  window.location = 'grab://';
+  setTimeout(() => { window.location = 'https://apps.apple.com/app/grab/id647268330'; }, 500);
+}
 function openOwnerContact() { window.open(`mailto:${CONFIG.ownerEmail}`,'_blank'); }
+function openSpotifyItem(e, url) {
+  e.preventDefault();
+  // Convert web URL to spotify URI
+  // https://open.spotify.com/playlist/xxx → spotify:playlist:xxx
+  const match = url.match(/open\.spotify\.com\/(playlist|track|album)\/([a-zA-Z0-9]+)/);
+  if (match) {
+    window.location = `spotify:${match[1]}:${match[2]}`;
+    setTimeout(() => { window.location = url; }, 500);
+  } else {
+    window.location = url;
+  }
+}
+
 function showToast(m) {
   const t=document.getElementById('toast');
   t.textContent=m; t.classList.add('show');
